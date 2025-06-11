@@ -1,0 +1,38 @@
+{
+  "name": "sta-crm-server",
+  "version": "1.0.0",
+  "description": "Backend API for STA CRM application",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "lint": "eslint . --ext .ts",
+    "add-invoice-items": "ts-node src/addInvoiceItems.ts",
+    "check-invoices": "ts-node src/checkInvoiceItems.ts",
+    "fix-invoices": "ts-node src/fixInvoiceItems.ts",
+    "add-order-logs": "ts-node src/addOrderLogs.ts"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
+    "pg": "^8.11.3",
+    "uuid": "^9.0.1",
+    "zod": "^3.22.4",
+    "zod-express-middleware": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.4",
+    "@types/pg": "^8.10.9",
+    "@types/uuid": "^9.0.8",
+    "nodemon": "^3.0.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.3"
+  }
+} 

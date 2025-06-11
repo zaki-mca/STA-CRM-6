@@ -1,0 +1,175 @@
+import { Pool, PoolClient } from 'pg';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load environment variables from .env file
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+// Connection settings
+const connectionConfig = {
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  max: 20, // Maximum number of clients in the pool
+  idleTimeoutMillis: 30000, // How long a client is allowed to remain idle before being closed
+  connectionTimeoutMillis: 5000, // Increased timeout for connection
+};
+
+// Create a connection pool
+const pool = new Pool(connectionConfig);
+
+// Connection management
+let isConnected = false;
+let connectionRetries = 0;
+const MAX_RETRIES = 5;
+
+// Monitor pool events
+pool.on('connect', (client) => {
+  isConnected = true;
+  connectionRetries = 0;
+  console.log('New client connected to PostgreSQL database');
+});
+
+pool.on('error', (err, client) => {
+  isConnected = false;
+  console.error('Unexpected error on idle client', err);
+  
+  // Attempt reconnection if within retry limits
+  if (connectionRetries < MAX_RETRIES) {
+    connectionRetries++;
+    console.log(`Attempting to reconnect (retry ${connectionRetries}/${MAX_RETRIES})...`);
+    setTimeout(() => {
+      testConnection();
+    }, 5000 * connectionRetries); // Exponential backoff
+  } else {
+    console.error(`Failed to reconnect after ${MAX_RETRIES} attempts`);
+  }
+});
+
+// Test the connection
+const testConnection = async () => {
+  let client: PoolClient | null = null;
+  try {
+    client = await pool.connect();
+    console.log('Connected to PostgreSQL database');
+    isConnected = true;
+    connectionRetries = 0;
+  } catch (err) {
+    isConnected = false;
+    console.error('Error connecting to PostgreSQL database:', err);
+    
+    // Attempt reconnection if within retry limits
+    if (connectionRetries < MAX_RETRIES) {
+      connectionRetries++;
+      console.log(`Attempting to reconnect (retry ${connectionRetries}/${MAX_RETRIES})...`);
+      setTimeout(() => {
+        testConnection();
+      }, 5000 * connectionRetries); // Exponential backoff
+    }
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+};
+
+// Initial connection test
+testConnection();
+
+// Query function with enhanced logging, retries and robust error handling
+export async function query(text: string, params: any[] = []): Promise<any> {
+  let client;
+  try {
+    // Truncate long queries for logging
+    const truncatedText = text.length > 200 ? `${text.substring(0, 200)}...` : text;
+    
+    // Debug info for query planning and potential issues
+    const queryDebugInfo = {
+      query: truncatedText,
+      paramCount: params.length,
+      timestamp: new Date().toISOString()
+    };
+    
+    console.debug('DB Query:', queryDebugInfo);
+    
+    // Get client from pool
+    client = await pool.connect();
+    
+    // Run query with timing
+    const start = Date.now();
+    const result = await client.query(text, params);
+    const duration = Date.now() - start;
+    
+    // Log slow queries (over 500ms)
+    if (duration > 500) {
+      console.warn(`Slow query detected (${duration}ms):`, truncatedText);
+    }
+    
+    console.debug('DB Result:', {
+      rowCount: result.rowCount,
+      duration: `${duration}ms`,
+      success: true
+    });
+    
+    return result;
+  } catch (err: any) {
+    // Enhanced error handling with better context
+    console.error('Database query error:', {
+      error: err.message,
+      code: err.code,
+      detail: err.detail,
+      hint: err.hint,
+      position: err.position,
+      query: text.substring(0, 200) + (text.length > 200 ? '...' : ''),
+      params: params.length > 0 ? 'Query contained parameters' : 'No parameters'
+    });
+    
+    // Specific handling for common Postgres errors
+    if (err.code === '23505') { // Unique violation
+      throw new Error(`Duplicate entry: ${err.detail || err.message}`);
+    } else if (err.code === '23503') { // Foreign key violation
+      throw new Error(`Referenced record does not exist: ${err.detail || err.message}`);
+    } else if (err.code === '42P01') { // Table doesn't exist
+      throw new Error(`Table not found: ${err.message}`);
+    } else if (err.code === '42703') { // Column doesn't exist
+      throw new Error(`Column not found: ${err.message}`);
+    }
+    
+    // Re-throw with more context
+    throw err;
+  } finally {
+    // Always release the client back to the pool
+    if (client) {
+      client.release();
+    }
+  }
+}
+
+// Transaction support
+export async function withTransaction<T>(callback: (client: PoolClient) => Promise<T>): Promise<T> {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const result = await callback(client);
+    await client.query('COMMIT');
+    return result;
+  } catch (e) {
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    client.release();
+  }
+}
+
+// Export enhanced health check function
+export async function checkHealth(): Promise<boolean> {
+  try {
+    const result = await query('SELECT NOW()');
+    return result && result.rows && result.rows.length > 0;
+  } catch (err) {
+    console.error('Database health check failed:', err);
+    return false;
+  }
+}
+
+// Export the pool for direct use if needed
+export default pool; 
