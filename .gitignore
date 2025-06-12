@@ -42,6 +42,9 @@ next-env.d.ts
 .idea/
 .vscode/
 
+# large files
+*.zip
+
 # Added by Claude Task Master
 # Logs
 logs
