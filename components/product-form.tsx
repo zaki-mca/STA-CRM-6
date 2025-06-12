@@ -40,6 +40,7 @@ export function ProductForm({
     name: product?.name || "",
     description: product?.description || "",
     reference: product?.reference || "",
+    sku: product?.sku || "",
     categoryId: product?.category?.id || "",
     brandId: product?.brand?.id || "",
     sellPrice: product?.sellPrice || 0,
@@ -84,18 +85,29 @@ export function ProductForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(formData)
+    
+    // Generate a unique SKU if not provided
+    let formDataToSubmit = { ...formData };
+    if (!formDataToSubmit.sku) {
+      // Generate a random SKU based on current timestamp and random string
+      const timestamp = new Date().getTime().toString().slice(-6);
+      const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
+      formDataToSubmit.sku = `SKU-${timestamp}-${randomStr}`;
+    }
+    
+    onSubmit(formDataToSubmit)
     setOpen(false)
     if (!product) {
       setFormData({
         name: "",
         description: "",
+        reference: "",
+        sku: "",
         categoryId: "",
         brandId: "",
         sellPrice: 0,
         buyPrice: 0,
         quantity: 0,
-        reference: "",
       })
     }
   }
@@ -141,6 +153,16 @@ export function ProductForm({
               value={formData.reference}
               onChange={(e) => setFormData({ ...formData, reference: e.target.value })}
               placeholder="Product reference code"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="sku">SKU</Label>
+            <Input
+              id="sku"
+              value={formData.sku}
+              onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
+              placeholder="Stock Keeping Unit (auto-generated if empty)"
             />
           </div>
 
@@ -225,7 +247,7 @@ export function ProductForm({
                 type="number"
                 step="0.01"
                 value={formData.buyPrice}
-                onChange={(e) => setFormData({ ...formData, buyPrice: Number.parseFloat(e.target.value) })}
+                onChange={(e) => setFormData({ ...formData, buyPrice: e.target.value === '' ? 0 : Number.parseFloat(e.target.value) })}
                 required
               />
             </div>
@@ -236,7 +258,7 @@ export function ProductForm({
                 type="number"
                 step="0.01"
                 value={formData.sellPrice}
-                onChange={(e) => setFormData({ ...formData, sellPrice: Number.parseFloat(e.target.value) })}
+                onChange={(e) => setFormData({ ...formData, sellPrice: e.target.value === '' ? 0 : Number.parseFloat(e.target.value) })}
                 required
               />
             </div>
@@ -248,7 +270,7 @@ export function ProductForm({
               id="quantity"
               type="number"
               value={formData.quantity}
-              onChange={(e) => setFormData({ ...formData, quantity: Number.parseInt(e.target.value) })}
+              onChange={(e) => setFormData({ ...formData, quantity: e.target.value === '' ? 0 : Number.parseInt(e.target.value) })}
               required
             />
           </div>

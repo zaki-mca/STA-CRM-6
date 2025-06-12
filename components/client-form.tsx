@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { SearchableSelect } from "@/components/searchable-select"
 import type { Client, ProfessionalDomain } from "@/lib/types"
 import { Code } from "lucide-react"
+import { useCRM } from "@/contexts/crm-context"
 
 interface ClientFormProps {
   client?: Client
@@ -124,6 +125,8 @@ export function ClientForm({
   })
   const [newDomain, setNewDomain] = useState("")
   const [showNewDomain, setShowNewDomain] = useState(false)
+  const [emailError, setEmailError] = useState("")
+  const { data } = useCRM()
 
   // Create type-safe components to fix TypeScript errors
   const TypeSafeDialogTrigger = DialogTrigger as any;
@@ -163,8 +166,33 @@ export function ClientForm({
     }
   }, [formData.ccpAccount])
 
+  // Check for duplicate email when email field changes
+  useEffect(() => {
+    if (formData.email) {
+      const isDuplicate = data.clients.some(
+        existingClient => 
+          existingClient.email.toLowerCase() === formData.email.toLowerCase() && 
+          (!client || existingClient.id !== client.id)
+      )
+      
+      if (isDuplicate) {
+        setEmailError("This email is already in use by another client")
+      } else {
+        setEmailError("")
+      }
+    } else {
+      setEmailError("")
+    }
+  }, [formData.email, data.clients, client])
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Check for duplicate email before submitting
+    if (emailError) {
+      return
+    }
+    
     onSubmit({
       ...formData,
       birthDate: new Date(formData.birthDate),
@@ -255,7 +283,11 @@ export function ClientForm({
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
+                className={emailError ? "border-red-500" : ""}
               />
+              {emailError && (
+                <p className="text-sm text-red-500">{emailError}</p>
+              )}
             </div>
             <div className="space-y-2">
               <TypeSafeLabel htmlFor="phoneNumber">Phone Number</TypeSafeLabel>
