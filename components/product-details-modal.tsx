@@ -41,7 +41,8 @@ export function ProductDetailsModal({ product, open, onOpenChange }: ProductDeta
     return sum + (productItem?.total || 0)
   }, 0)
 
-  const margin = buyPrice > 0 && typeof buyPrice === 'number' && typeof sellPrice === 'number' 
+  // Fix the margin calculation to prevent NaN
+  const margin = buyPrice > 0 
     ? (((sellPrice - buyPrice) / buyPrice) * 100).toFixed(1) 
     : '0.0';
   const isLowStock = (product.quantity || 0) < 10
