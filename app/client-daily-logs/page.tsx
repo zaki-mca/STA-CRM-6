@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -32,7 +33,7 @@ import {
   Mail,
   Phone,
 } from "lucide-react"
-import { toast } from "@/components/ui/use-toast"
+import { toast } from "@/lib/toast"
 
 export default function ClientDailyLogsPage() {
   const { data, addClient, addProfessionalDomain } = useCRM()
@@ -190,10 +191,9 @@ export default function ClientDailyLogsPage() {
         }
         setAddedClients([...addedClients, newAddedClient])
         setNewClientData({ clientId: "", notes: "" })
-        toast({
-          title: "Client added successfully",
-          description: "You can continue adding more clients.",
-          duration: 3000,
+        toast.success("Client added successfully. You can continue adding more clients.", {
+          position: "top-right",
+          autoClose: 3000
         })
       }
     }
@@ -218,30 +218,21 @@ export default function ClientDailyLogsPage() {
     }
     setAddedClients([...addedClients, newAddedClient])
 
-    toast({
-      title: "Client created and added to log",
-      description: "The new client has been created and added to today's log.",
-      duration: 3000,
+    toast.success("The new client has been created and added to today's log.", {
+      position: "top-right",
+      autoClose: 3000
     })
   }
 
   const submitDailyLog = async () => {
     if (addedClients.length === 0) {
-      toast({
-        title: "No clients added",
-        description: "Please add at least one client before submitting.",
-        duration: 3000,
-      })
+      toast.warning("Please add at least one client before submitting.")
       return
     }
 
     // Don't allow updates to closed logs (double-check in case the log was closed while the form was open)
     if (isUpdatingLog && selectedLog && selectedLog.isClosed) {
-      toast({
-        title: "Log is closed",
-        description: "Closed logs cannot be updated.",
-        duration: 3000,
-      })
+      toast.warning("Closed logs cannot be updated.")
       return
     }
 
@@ -285,11 +276,7 @@ export default function ClientDailyLogsPage() {
           }
         } catch (err) {
           console.error("Failed to create daily log:", err)
-          toast({
-            title: "Error creating daily log",
-            description: "There was an error creating the daily log. Please try again.",
-            duration: 5000,
-          })
+          toast.error("There was an error creating the daily log. Please try again.")
           return // Stop execution if we can't even create the log
         }
       }
@@ -300,11 +287,7 @@ export default function ClientDailyLogsPage() {
       setSelectedLog(null)
       
       // Show success message with accurate count
-      toast({
-        title: isUpdatingLog ? "Daily log updated successfully" : "Daily log created successfully",
-        description: `Successfully ${isUpdatingLog ? "updated" : "added"} ${processedClients} out of ${addedClients.length} clients to the log.`,
-        duration: 3000,
-      })
+      toast.success(`${isUpdatingLog ? "Daily log updated" : "Daily log created"} successfully. ${processedClients} out of ${addedClients.length} clients ${isUpdatingLog ? "updated" : "added"}.`)
       
       // Close the form dialog without refreshing the page
       setShowCreateLogForm(false);
@@ -336,11 +319,7 @@ export default function ClientDailyLogsPage() {
       }
     } catch (err) {
       console.error("Failed to submit daily log:", err)
-      toast({
-        title: "Error submitting log",
-        description: "There was an error submitting the log. Please try again.",
-        duration: 5000,
-      })
+      toast.error("There was an error submitting the log. Please try again.")
     }
   }
 
@@ -427,11 +406,7 @@ export default function ClientDailyLogsPage() {
   const handleUpdateLog = (log: any) => {
     // Don't allow updates to closed logs
     if (log.isClosed) {
-      toast({
-        title: "Log is closed",
-        description: "Closed logs cannot be updated.",
-        duration: 3000,
-      })
+      toast.warning("Closed logs cannot be updated.")
       return
     }
     
@@ -799,9 +774,26 @@ export default function ClientDailyLogsPage() {
                           <Button variant="outline" size="sm" onClick={() => handleUpdateLog(log)}>
                             Update
                           </Button>
-                          <Button variant="outline" size="sm" onClick={() => closeClientDailyLog(log.id)}>
-                            <Lock className="h-4 w-4" />
-                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <Lock className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Close Client Daily Log</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to close this client daily log for {log.date?.toLocaleDateString()}?
+                                  <span className="block mt-2">This action cannot be undone and the log cannot be reopened or modified after closing.</span>
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => closeClientDailyLog(log.id)}>Close Log</AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </>
                       )}
                     </div>

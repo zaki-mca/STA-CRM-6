@@ -9,7 +9,9 @@ import { Pagination } from "@/components/pagination"
 import { SortableTableHeader } from "@/components/sortable-table-header"
 import { ProviderForm } from "@/components/provider-form"
 import { ProviderDetailsModal } from "@/components/provider-details-modal"
+import { ConfirmationDialog } from "@/components/confirmation-dialog"
 import { useCRM } from "@/contexts/crm-context"
+import { toast } from "@/lib/toast"
 import { Plus, Search, Edit, Trash2, Eye } from "lucide-react"
 import type { Provider } from "@/lib/types"
 
@@ -21,6 +23,8 @@ export default function ProvidersPage() {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null)
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const [providerToDelete, setProviderToDelete] = useState<string | null>(null)
 
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc"
@@ -59,6 +63,51 @@ export default function ProvidersPage() {
   const handleViewDetails = (provider: Provider) => {
     setSelectedProvider(provider)
     setShowDetailsModal(true)
+  }
+  
+  const handleDeleteClick = (providerId: string) => {
+    setProviderToDelete(providerId)
+    setShowDeleteConfirmation(true)
+  }
+  
+  const handleConfirmDelete = async () => {
+    if (providerToDelete) {
+      try {
+        await deleteProvider(providerToDelete)
+        toast.success("Provider deleted successfully", {
+          position: "top-right",
+          autoClose: 3000
+        })
+        setProviderToDelete(null)
+      } catch (error: any) {
+        console.error("Error deleting provider:", error)
+        
+        // Check for foreign key constraint violation
+        if (error.message && error.message.includes("still referenced from table")) {
+          if (error.message.includes("invoices")) {
+            toast.error("Cannot delete this provider because it has associated invoices. Please delete the invoices first.", {
+              position: "top-right",
+              autoClose: 5000
+            })
+          } else if (error.message.includes("products")) {
+            toast.error("Cannot delete this provider because it has associated products. Please delete the products first.", {
+              position: "top-right",
+              autoClose: 5000
+            })
+          } else {
+            toast.error("Cannot delete this provider because it is referenced by other records in the system.", {
+              position: "top-right",
+              autoClose: 5000
+            })
+          }
+        } else {
+          toast.error("Failed to delete provider: " + (error.message || "Unknown error"), {
+            position: "top-right",
+            autoClose: 5000
+          })
+        }
+      }
+    }
   }
 
   return (
@@ -134,7 +183,7 @@ export default function ProvidersPage() {
                           </Button>
                         }
                       />
-                      <Button variant="outline" size="sm" onClick={() => deleteProvider(provider.id)}>
+                      <Button variant="outline" size="sm" onClick={() => handleDeleteClick(provider.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -159,6 +208,16 @@ export default function ProvidersPage() {
       </Card>
 
       <ProviderDetailsModal provider={selectedProvider} open={showDetailsModal} onOpenChange={setShowDetailsModal} />
+      
+      <ConfirmationDialog
+        title="Delete Provider"
+        description="Are you sure you want to delete this provider? This action cannot be undone."
+        open={showDeleteConfirmation}
+        onOpenChange={setShowDeleteConfirmation}
+        onConfirm={handleConfirmDelete}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </div>
   )
 }

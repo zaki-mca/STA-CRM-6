@@ -142,21 +142,49 @@ Scan the frontend design and analyze the displayed data structure, including all
 
 todo :
 
-- dark mode theme
-- repor print
-- bulk add with csv or xls file
-- bulk delete/select/edit
-- images upload for product
-- api product adapt to woocommerce
 
+
+- bulk add category/brand/professional domaine xls csv import
+
+- data displayed structure
 - display more data for clients in clients daily logs
 - display providers data: phone and adress in invoice details, then display reference and category and brand and unit price in invoice items
+
+- report print template
+
+- ( Ask before apply ) api product adapt to woocommerce
+
+- ok dark mode theme
+
+- bulk delete/select/edit
+- images upload for product
+- issue when update order or invoice product duplicate
+- issue when creating a new product in invoice
+- role and users management 
+
+
+
+
 - logs
 
 - Product not item
-- issue when update order or invoice product duplicate
-- generate sku when cretin a new product
 
-- fix adding in quick actions
+- ok generate sku when cretin a new product -format-
+
+- ok fix adding in quick actions
+
+- ok succes and errors popup messages 
+- ok warning confirmation when deleting someting (are you sure you want to delete)
+- ok add deleted succesfully toast for everything that can be deleted
 
 
+
+
+
+
+
+
+For example, if you want to modify a file and commit the changes, you would:
+Make changes to your files
+Stage the changes with git add . (or specific files)
+Commit with git commit -m "Your commit message"

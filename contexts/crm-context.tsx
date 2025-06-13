@@ -26,6 +26,7 @@ import {
   invoiceApi,
   ApiError
 } from "@/lib/api"
+import { toast } from "@/lib/toast"
 
 const CRMContext = createContext<CRMContextType | undefined>(undefined)
 
@@ -57,8 +58,23 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
   const handleApiError = (err: any, source: string = "API operation") => {
     console.error(`Error in ${source}:`, err);
     
+    let errorMessage = "";
+    
     if (err instanceof ApiError) {
-      setError(`${err.message}`);
+      // Parse foreign key constraint errors
+      if (err.message && err.message.includes("still referenced from table")) {
+        const tableMatch = err.message.match(/referenced from table "([^"]+)"/);
+        if (tableMatch && tableMatch[1]) {
+          const referencingTable = tableMatch[1];
+          errorMessage = `Cannot delete this item because it is referenced by ${referencingTable}. Please delete the associated ${referencingTable} first.`;
+        } else {
+          errorMessage = `Cannot delete this item because it is referenced by other records in the system.`;
+        }
+      } else {
+        errorMessage = `${err.message}`;
+      }
+      
+      setError(errorMessage);
       setErrorDetails({
         status: err.status,
         message: err.message,
@@ -426,6 +442,13 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
       };
       
       setData((prev) => ({ ...prev, providers: [...prev.providers, newProvider] }));
+      
+      // Show success message
+      toast.success(`${providerData.name} has been added to your providers.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
+      
       return newProvider;
     } catch (err: any) {
       handleApiError(err, "adding provider");
@@ -468,11 +491,18 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
 
   const deleteProvider = async (id: string) => {
     try {
+      const providerToDelete = data.providers.find(provider => provider.id === id);
       await providerApi.delete(id)
       setData((prev) => ({
         ...prev,
         providers: prev.providers.filter((provider) => provider.id !== id),
       }))
+      
+      // Show success message
+      toast.success(`${providerToDelete?.name || 'Provider'} has been deleted successfully.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
     } catch (err: any) {
       handleApiError(err, "deleting provider");
       throw err
@@ -534,6 +564,13 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
       }
       
       setData((prev) => ({ ...prev, clients: [...prev.clients, newClient] }))
+      
+      // Show success message
+      toast.success(`${clientData.firstName} ${clientData.lastName} has been added to your clients.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
+      
       return newClient
     } catch (err: any) {
       handleApiError(err, "adding client");
@@ -606,11 +643,18 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
 
   const deleteClient = async (id: string) => {
     try {
+      const clientToDelete = data.clients.find(client => client.id === id);
       await clientApi.delete(id)
       setData((prev) => ({
         ...prev,
         clients: prev.clients.filter((client) => client.id !== id),
       }))
+      
+      // Show success message
+      toast.success(`${clientToDelete ? `${clientToDelete.firstName} ${clientToDelete.lastName}` : 'Client'} has been deleted successfully.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
     } catch (err: any) {
       handleApiError(err, "deleting client");
       throw err;
@@ -649,6 +693,13 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
       }
       
       setData((prev) => ({ ...prev, products: [...prev.products, newProduct] }))
+      
+      // Show success message
+      toast.success(`${productData.name} has been added to your products.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
+      
       return newProduct
     } catch (err: any) {
       handleApiError(err, "adding product");
@@ -702,11 +753,18 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
 
   const deleteProduct = async (id: string) => {
     try {
+      const productToDelete = data.products.find(product => product.id === id);
       await productApi.delete(id)
       setData((prev) => ({
         ...prev,
         products: prev.products.filter((product) => product.id !== id),
       }))
+      
+      // Show success message
+      toast.success(`${productToDelete?.name || 'Product'} has been deleted successfully.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
     } catch (err: any) {
       handleApiError(err, "deleting product");
       throw err;
@@ -718,6 +776,13 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
       const response = await categoryApi.create({ name })
       const newCategory = response.data
       setData((prev) => ({ ...prev, categories: [...prev.categories, newCategory] }))
+      
+      // Show success message
+      toast.success(`${name} has been added to your categories.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
+      
       return newCategory
     } catch (err: any) {
       handleApiError(err, "adding category");
@@ -750,11 +815,18 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
 
   const deleteCategory = async (id: string) => {
     try {
+      const categoryToDelete = data.categories.find(category => category.id === id);
       await categoryApi.delete(id)
       setData((prev) => ({
         ...prev,
         categories: prev.categories.filter((category) => category.id !== id),
       }))
+      
+      // Show success message
+      toast.success(`${categoryToDelete?.name || 'Category'} has been deleted successfully.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
     } catch (err: any) {
       handleApiError(err, "deleting category");
       throw err;
@@ -766,6 +838,13 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
       const response = await brandApi.create({ name })
       const newBrand = response.data
       setData((prev) => ({ ...prev, brands: [...prev.brands, newBrand] }))
+      
+      // Show success message
+      toast.success(`${name} has been added to your brands.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
+      
       return newBrand
     } catch (err: any) {
       handleApiError(err, "adding brand");
@@ -798,11 +877,18 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
 
   const deleteBrand = async (id: string) => {
     try {
+      const brandToDelete = data.brands.find(brand => brand.id === id);
       await brandApi.delete(id)
       setData((prev) => ({
         ...prev,
         brands: prev.brands.filter((brand) => brand.id !== id),
       }))
+      
+      // Show success message
+      toast.success(`${brandToDelete?.name || 'Brand'} has been deleted successfully.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
     } catch (err: any) {
       handleApiError(err, "deleting brand");
       throw err;
@@ -828,6 +914,13 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
       }
       
       setData((prev) => ({ ...prev, professionalDomains: [...prev.professionalDomains, newDomain] }))
+      
+      // Show success message
+      toast.success(`${domainData.name} has been added to your professional domains.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
+      
       return newDomain
     } catch (err: any) {
       handleApiError(err, "adding professional domain");
@@ -868,11 +961,18 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
 
   const deleteProfessionalDomain = async (id: string) => {
     try {
+      const domainToDelete = data.professionalDomains.find(domain => domain.id === id);
       await professionalDomainApi.delete(id)
       setData((prev) => ({
         ...prev,
         professionalDomains: prev.professionalDomains.filter((domain) => domain.id !== id),
       }))
+      
+      // Show success message
+      toast.success(`${domainToDelete?.name || 'Professional domain'} has been deleted successfully.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
     } catch (err: any) {
       handleApiError(err, "deleting professional domain");
       throw err;
@@ -892,12 +992,19 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
       console.log("Sending invoice data:", JSON.stringify(invoiceData, null, 2));
       const response = await invoiceApi.create(invoiceData);
       console.log("Invoice creation response:", response);
+      
+      // Show success message
+      toast.success(`Invoice #${response.data.invoice_number || 'New'} has been created successfully.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
+      
       await refreshData();
       return response.data;
     } catch (err) {
       console.error("Detailed invoice creation error:", err);
       if (err instanceof ApiError) {
-        console.error("API Error details:", err.status, err.message, err.response?.data);
+        console.error("API Error details:", err.status, err.message);
       }
       handleApiError(err, "invoice creation");
       throw err;
@@ -1030,11 +1137,18 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
 
   const deleteInvoice = async (id: string) => {
     try {
+      const invoiceToDelete = data.invoices.find(invoice => invoice.id === id);
       await invoiceApi.delete(id)
       setData((prev) => ({
         ...prev,
         invoices: prev.invoices.filter((invoice) => invoice.id !== id),
       }))
+      
+      // Show success message
+      toast.success(`Invoice #${invoiceToDelete?.invoice_number || id} has been deleted successfully.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
     } catch (err: any) {
       handleApiError(err, "deleting invoice");
       throw err;

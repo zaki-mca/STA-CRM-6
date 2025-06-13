@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -19,6 +20,7 @@ import { useOrders } from "@/contexts/order-context"
 import type { OrderItem } from "@/lib/order-types"
 import { Plus, Search, Eye, Edit, Trash2, Package, Clock, CheckCircle, XCircle } from "lucide-react"
 import * as React from "react"
+import { toast } from "@/lib/toast"
 
 export default function OrdersPage() {
   const { data, addClient, addProfessionalDomain } = useCRM()
@@ -178,8 +180,16 @@ export default function OrdersPage() {
 
     if (editingOrder) {
       updateOrder(editingOrder.id, order)
+      toast.success(`Order #${editingOrder.orderNumber} has been updated successfully.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
     } else {
       addOrder(order)
+      toast.success(`New order has been created successfully.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
     }
 
     setNewOrder({ clientId: "", items: [], expectedDelivery: "", notes: "" })
@@ -485,9 +495,26 @@ export default function OrdersPage() {
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => deleteOrder(order.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This will permanently delete order #{order.orderNumber}.
+                              This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => deleteOrder(order.id)}>Delete</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>

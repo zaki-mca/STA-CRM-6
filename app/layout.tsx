@@ -6,7 +6,7 @@ import { AuthProvider } from "@/contexts/auth-context"
 import { CRMProvider } from "@/contexts/crm-context"
 import { OrderProvider } from "@/contexts/order-context"
 import { DailyLogsProvider } from "@/contexts/daily-logs-context"
-import { ToastProvider } from "@/components/ui/toast"
+import { ToastProvider } from "@/components/toast-provider"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AppContent } from "@/components/app-content"
 

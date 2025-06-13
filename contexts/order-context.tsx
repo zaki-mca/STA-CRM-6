@@ -4,6 +4,7 @@ import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
 import type { Order, OrderContextType } from "@/lib/order-types"
 import { orderApi } from "@/lib/api"
+import { toast } from "@/lib/toast"
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined)
 
@@ -117,6 +118,13 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       }
       
       setOrders((prev) => [...prev, newOrder])
+      
+      // Show success message
+      toast.success(`Order #${newOrder.orderNumber} has been created successfully.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
+      
       return newOrder
     } catch (err: any) {
       console.error("Failed to add order:", err)
@@ -186,8 +194,15 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 
   const deleteOrder = async (id: string) => {
     try {
+      const orderToDelete = orders.find(order => order.id === id);
       await orderApi.delete(id)
       setOrders((prev) => prev.filter((order) => order.id !== id))
+      
+      // Show success message
+      toast.success(`Order #${orderToDelete?.orderNumber || id} has been deleted successfully.`, {
+        position: "top-right",
+        autoClose: 3000
+      });
     } catch (err: any) {
       console.error("Failed to delete order:", err)
       throw err

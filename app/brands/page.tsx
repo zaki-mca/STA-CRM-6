@@ -69,7 +69,18 @@ export default function BrandsPage() {
       toast.success("Brand deleted successfully")
       setBrandToDelete(null)
     } catch (error: any) {
-      toast.error(`Failed to delete brand: ${error.message}`)
+      // Check for foreign key constraint error
+      if (error.message && error.message.includes("referenced from table")) {
+        const productsCount = data.products.filter(
+          (product) => product.brand && product.brand.id === brandToDelete?.id
+        ).length;
+        
+        toast.error(
+          `Cannot delete this brand because it is used by ${productsCount} product(s). Please remove the brand from all products first.`
+        );
+      } else {
+        toast.error(`Failed to delete brand: ${error.message}`);
+      }
     }
   }
 
@@ -174,12 +185,25 @@ export default function BrandsPage() {
                                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                 <AlertDialogDescription>
                                   This will permanently delete the brand &quot;{brand.name}&quot;.
-                                  This action cannot be undone.
+                                  {productsCount > 0 && (
+                                    <span className="mt-2 block text-amber-600">
+                                      Warning: This brand is used by {productsCount} product(s).
+                                      You must remove the brand from these products before deleting.
+                                    </span>
+                                  )}
+                                  {productsCount === 0 && (
+                                    <span className="block mt-2">This action cannot be undone.</span>
+                                  )}
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel onClick={() => setBrandToDelete(null)}>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={handleDeleteBrand}>Delete</AlertDialogAction>
+                                <AlertDialogAction 
+                                  onClick={handleDeleteBrand}
+                                  disabled={productsCount > 0}
+                                >
+                                  Delete
+                                </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>

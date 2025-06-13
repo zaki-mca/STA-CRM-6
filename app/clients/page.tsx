@@ -10,7 +10,9 @@ import { Pagination } from "@/components/pagination"
 import { SortableTableHeader } from "@/components/sortable-table-header"
 import { ClientForm } from "@/components/client-form"
 import { ClientDetailsModal } from "@/components/client-details-modal"
+import { ConfirmationDialog } from "@/components/confirmation-dialog"
 import { useCRM } from "@/contexts/crm-context"
+import { toast } from "@/lib/toast"
 import {
   Plus,
   Search,
@@ -33,6 +35,8 @@ export default function ClientsPage() {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null)
   const [selectedClient, setSelectedClient] = useState<any>(null)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const [clientToDelete, setClientToDelete] = useState<string | null>(null)
 
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc"
@@ -91,6 +95,56 @@ export default function ClientsPage() {
 
   const handleAddProfessionalDomain = (name: string) => {
     addProfessionalDomain({ name })
+  }
+  
+  const handleDeleteClick = (clientId: string) => {
+    setClientToDelete(clientId)
+    setShowDeleteConfirmation(true)
+  }
+  
+  const handleConfirmDelete = async () => {
+    if (clientToDelete) {
+      try {
+        await deleteClient(clientToDelete)
+        toast.success("Client deleted successfully", {
+          position: "top-right",
+          autoClose: 3000
+        })
+        setClientToDelete(null)
+      } catch (error: any) {
+        console.error("Error deleting client:", error)
+        
+        // Check for foreign key constraint violation
+        if (error.message && error.message.includes("still referenced from table")) {
+          if (error.message.includes("invoices")) {
+            toast.error("Cannot delete this client because they have associated invoices. Please delete the invoices first.", {
+              position: "top-right",
+              autoClose: 5000
+            })
+          } else if (error.message.includes("orders")) {
+            toast.error("Cannot delete this client because they have associated orders. Please delete the orders first.", {
+              position: "top-right",
+              autoClose: 5000
+            })
+          } else if (error.message.includes("client_logs")) {
+            toast.error("Cannot delete this client because they have associated logs. Please delete the logs first.", {
+              position: "top-right",
+              autoClose: 5000
+            })
+          } else {
+            toast.error("Cannot delete this client because they are referenced by other records in the system.", {
+              position: "top-right",
+              autoClose: 5000
+            })
+          }
+        } else {
+          toast.error("Failed to delete client: " + (error.message || "Unknown error"), {
+            position: "top-right",
+            autoClose: 5000
+          })
+        }
+      }
+    }
   }
 
   return (
@@ -239,7 +293,7 @@ export default function ClientsPage() {
                           </Button>
                         }
                       />
-                      <Button variant="outline" size="sm" onClick={() => deleteClient(client.id)}>
+                      <Button variant="outline" size="sm" onClick={() => handleDeleteClick(client.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -264,6 +318,16 @@ export default function ClientsPage() {
       </Card>
 
       <ClientDetailsModal client={selectedClient} open={showDetailsModal} onOpenChange={setShowDetailsModal} />
+      
+      <ConfirmationDialog
+        title="Delete Client"
+        description="Are you sure you want to delete this client? This action cannot be undone."
+        open={showDeleteConfirmation}
+        onOpenChange={setShowDeleteConfirmation}
+        onConfirm={handleConfirmDelete}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </div>
   )
 }

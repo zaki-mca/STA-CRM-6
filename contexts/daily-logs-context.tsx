@@ -4,6 +4,7 @@ import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
 import type { ClientDailyLog, OrderDailyLog, DailyLogsContextType } from "@/lib/daily-logs-types"
 import { clientLogApi, orderLogApi, orderLogEntryApi } from "@/lib/api"
+import { toast } from "react-toastify"
 
 const DailyLogsContext = createContext<DailyLogsContextType | undefined>(undefined)
 
@@ -364,6 +365,12 @@ export function DailyLogsProvider({ children }: { children: React.ReactNode }) {
         prev.map((log) => (log.id === logId ? updatedLog : log))
       )
       
+      // Show success toast
+      toast.success(`Client daily log for ${updatedLog.date.toLocaleDateString()} has been closed successfully`, {
+        position: "top-right",
+        autoClose: 3000
+      });
+      
       return updatedLog
     } catch (err: any) {
       console.error("Failed to close client log:", err)
@@ -578,6 +585,13 @@ export function DailyLogsProvider({ children }: { children: React.ReactNode }) {
         );
         
         setOrderLogs(updatedLogs);
+        
+        // Show success toast
+        toast.success(`Order daily log for ${basicLog.date.toLocaleDateString()} has been closed successfully`, {
+          position: "top-right",
+          autoClose: 3000
+        });
+        
         return basicLog;
       }
       
@@ -594,6 +608,13 @@ export function DailyLogsProvider({ children }: { children: React.ReactNode }) {
       );
       
       setOrderLogs(updatedLogs);
+      
+      // Show success toast
+      toast.success(`Order daily log for ${closedLog.date.toLocaleDateString()} has been closed successfully`, {
+        position: "top-right",
+        autoClose: 3000
+      });
+      
       return closedLog;
     } catch (err: any) {
       console.error(`Error closing order log ${logId}:`, err);

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -17,7 +18,7 @@ import { OrderForm } from "@/components/order-form"
 import { OrderDailyLogDetailsModal } from "@/components/order-daily-log-details-modal"
 import { useOrders } from "@/contexts/order-context"
 import { useDailyLogs } from "@/contexts/daily-logs-context"
-import { useToast } from "@/components/ui/use-toast"
+import { toast } from "@/lib/toast"
 import {
   Plus,
   Search,
@@ -72,8 +73,6 @@ export default function OrderDailyLogsPage() {
   const [logToUpdate, setLogToUpdate] = useState<any>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const { toast } = useToast()
 
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc"
@@ -246,10 +245,9 @@ export default function OrderDailyLogsPage() {
         }
         setAddedOrders([...addedOrders, newAddedOrder])
         setNewOrderData({ orderId: "", notes: "" })
-        toast({
-          title: "Order added successfully",
-          description: "You can continue adding more orders.",
-          duration: 3000,
+        toast.success("Order added successfully. You can continue adding more orders.", {
+          position: "top-right",
+          autoClose: 3000
         })
       }
     }
@@ -277,29 +275,20 @@ export default function OrderDailyLogsPage() {
     }
     setAddedOrders([...addedOrders, newAddedOrder])
 
-    toast({
-      title: "Order created and added successfully",
-      description: "The new order has been added to your system and to this log.",
-      duration: 3000,
+    toast.success("The new order has been added to your system and to this log.", {
+      position: "top-right",
+      autoClose: 3000
     })
   }
 
   const submitDailyLog = async () => {
     if (addedOrders.length === 0) {
-      toast({
-        title: "No orders added",
-        description: "Please add at least one order before submitting.",
-        duration: 3000,
-      })
+      toast.warning("Please add at least one order before submitting.")
       return
     }
 
     // Show loading toast
-    toast({
-      title: "Processing orders...",
-      description: `Adding ${addedOrders.length} orders to the daily log.`,
-      duration: 5000,
-    })
+    toast.info(`Adding ${addedOrders.length} orders to the daily log...`)
 
     setIsSubmitting(true)
     const today = new Date()
@@ -636,11 +625,7 @@ export default function OrderDailyLogsPage() {
   const handleCloseLog = async (logId: string) => {
     try {
       // Show loading toast
-      toast({
-        title: "Closing log...",
-        description: "Please wait while we close the log.",
-        duration: 3000,
-      });
+      toast.info("Please wait while we close the log...");
       
       // Close the log
       const closedLog = await closeOrderDailyLog(logId);
@@ -651,19 +636,10 @@ export default function OrderDailyLogsPage() {
       );
       setOrderLogs(updatedLogs);
       
-      // Show success message
-      toast({
-        title: "Success",
-        description: "Log closed successfully",
-        duration: 3000,
-      });
+      // Success toast is now handled in the closeOrderDailyLog function
     } catch (error) {
       console.error("Error closing log:", error);
-      toast({
-        title: "Error",
-        description: "Failed to close log",
-        duration: 5000,
-      });
+      toast.error("Failed to close log");
     }
   };
 
@@ -1019,9 +995,26 @@ export default function OrderDailyLogsPage() {
                           <Button variant="outline" size="sm" onClick={() => handleUpdateLog(log)}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="outline" size="sm" onClick={() => handleCloseLog(log.id)}>
-                            <Lock className="h-4 w-4" />
-                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <Lock className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Close Order Daily Log</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to close this order daily log for {log.date?.toLocaleDateString()}?
+                                  <span className="block mt-2">This action cannot be undone and the log cannot be reopened or modified after closing.</span>
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleCloseLog(log.id)}>Close Log</AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </>
                       ) : null}
                     </div>
