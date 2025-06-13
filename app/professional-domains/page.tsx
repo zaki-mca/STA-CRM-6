@@ -10,15 +10,29 @@ import { Pagination } from "@/components/pagination"
 import { SortableTableHeader } from "@/components/sortable-table-header"
 import { ProfessionalDomainForm } from "@/components/professional-domain-form"
 import { useCRM } from "@/contexts/crm-context"
-import { Plus, Search, Edit, Trash2, Shield, Code } from "lucide-react"
+import { Plus, Search, Edit, Trash2, Shield, Code, AlertTriangle } from "lucide-react"
+import { FileUpload } from "@/components/file-upload"
+import { toast } from "react-toastify"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 export default function ProfessionalDomainsPage() {
-  const { data, addProfessionalDomain, updateProfessionalDomain, deleteProfessionalDomain } = useCRM()
+  const { data, addProfessionalDomain, updateProfessionalDomain, deleteProfessionalDomain, bulkUploadProfessionalDomains, refreshData } = useCRM()
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null)
   const [isAdmin] = useState(true) // Simplified admin check
+  const [domainToDelete, setDomainToDelete] = useState<string | null>(null)
 
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc"
@@ -77,16 +91,69 @@ export default function ProfessionalDomainsPage() {
                 </Badge>
               )}
             </CardTitle>
-            <ProfessionalDomainForm
-              onSubmit={addProfessionalDomain}
-              isAdmin={isAdmin}
-              trigger={
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Domain
-                </Button>
-              }
-            />
+            <div className="flex items-center gap-2">
+              <FileUpload
+                apiEndpoint={`${process.env.NEXT_PUBLIC_API_URL}/professional-domains/bulk-upload`}
+                entityType="professional domain"
+                onUploadSuccess={(newDomains) => {
+                  // Enhanced success message with more details using react-toastify
+                  if (newDomains.length === 0) {
+                    toast.info("No new professional domains were added", {
+                      position: "top-right",
+                      autoClose: 5000
+                    });
+                  } else {
+                    toast.success(
+                      <div>
+                        <p className="font-semibold mb-1">Successfully uploaded {newDomains.length} {newDomains.length === 1 ? 'professional domain' : 'professional domains'}</p>
+                        <ul className="list-disc pl-4 mt-1 text-sm max-h-32 overflow-auto">
+                          {newDomains.slice(0, 5).map((domain: { name: string, paymentCode?: string }, idx: number) => (
+                            <li key={idx}>
+                              {domain.name}
+                              {domain.paymentCode && <span className="text-purple-600 ml-1">(Code: {domain.paymentCode})</span>}
+                            </li>
+                          ))}
+                          {newDomains.length > 5 && <li>...and {newDomains.length - 5} more</li>}
+                        </ul>
+                      </div>,
+                      {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true
+                      }
+                    );
+                  }
+                  
+                  // Refresh data and notify when complete with react-toastify
+                  const refreshPromise = refreshData();
+                  toast.promise(
+                    refreshPromise,
+                    {
+                      pending: 'Updating professional domains list...',
+                      success: 'Professional domains list refreshed successfully!',
+                      error: 'Failed to refresh professional domains'
+                    },
+                    {
+                      position: "top-right",
+                      autoClose: 3000
+                    }
+                  );
+                }}
+              />
+              <ProfessionalDomainForm
+                onSubmit={addProfessionalDomain}
+                isAdmin={isAdmin}
+                trigger={
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Domain
+                  </Button>
+                }
+              />
+            </div>
           </div>
           <div className="flex items-center space-x-2">
             <Search className="h-4 w-4 text-gray-400" />
@@ -150,14 +217,56 @@ export default function ProfessionalDomainsPage() {
                             </Button>
                           }
                         />
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => deleteProfessionalDomain(domain.id)}
-                          disabled={clientsCount > 0}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDomainToDelete(domain.id)}
+                              disabled={clientsCount > 0}
+                            >
+                              <Trash2 className="h-4 w-4 text-red-500" />
+                              <span className="sr-only">Delete</span>
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This will permanently delete the professional domain &quot;{domain.name}&quot;.
+                                {clientsCount > 0 && (
+                                  <span className="mt-2 block text-amber-600">
+                                    Warning: This domain is used by {clientsCount} client(s).
+                                    You must remove the domain from these clients before deleting.
+                                  </span>
+                                )}
+                                {domain.paymentCode && clientsCount === 0 && (
+                                  <span className="mt-2 block text-amber-600">
+                                    Warning: This domain has a payment code ({domain.paymentCode}) associated with it.
+                                  </span>
+                                )}
+                                {clientsCount === 0 && (
+                                  <span className="block mt-2">This action cannot be undone.</span>
+                                )}
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel onClick={() => setDomainToDelete(null)}>Cancel</AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={() => {
+                                  if (domainToDelete) {
+                                    deleteProfessionalDomain(domain.id);
+                                    toast.success(`Professional domain "${domain.name}" deleted successfully`);
+                                  }
+                                }}
+                                disabled={clientsCount > 0}
+                                className={clientsCount === 0 ? "bg-red-600 hover:bg-red-700" : ""}
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </TableCell>
                   </TableRow>

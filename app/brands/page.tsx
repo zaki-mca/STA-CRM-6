@@ -11,10 +11,11 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useCRM } from "@/contexts/crm-context"
 import { Brand } from "@/lib/types"
 import { Plus, Pencil, Trash2 } from "lucide-react"
-import { toast } from "sonner"
+import { toast } from "react-toastify"
+import { FileUpload } from "@/components/file-upload"
 
 export default function BrandsPage() {
-  const { data, addBrand, updateBrand, deleteBrand } = useCRM()
+  const { data, addBrand, updateBrand, deleteBrand, refreshData } = useCRM()
   const [searchTerm, setSearchTerm] = useState("")
   const [newBrand, setNewBrand] = useState<Partial<Brand>>({ name: "" })
   const [editingBrand, setEditingBrand] = useState<Brand | null>(null)
@@ -101,34 +102,85 @@ export default function BrandsPage() {
           />
         </div>
 
-        <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-          <DialogTrigger asChild>
-            <Button className="gap-1">
-              <Plus className="h-4 w-4" />
-              Add Brand
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New Brand</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Brand Name</Label>
-                <Input
-                  id="name"
-                  placeholder="Enter brand name"
-                  value={newBrand.name}
-                  onChange={(e) => setNewBrand({ ...newBrand, name: e.target.value })}
-                />
+        <div className="flex items-center gap-2">
+          <FileUpload
+            apiEndpoint={`${process.env.NEXT_PUBLIC_API_URL}/brands/bulk-upload`}
+            entityType="brand"
+            onUploadSuccess={(newBrands) => {
+              // Enhanced success message with more details using react-toastify
+              if (newBrands.length === 0) {
+                toast.info("No new brands were added", {
+                  position: "top-right",
+                  autoClose: 5000
+                });
+              } else {
+                toast.success(
+                  <div>
+                    <p className="font-semibold mb-1">Successfully uploaded {newBrands.length} {newBrands.length === 1 ? 'brand' : 'brands'}</p>
+                    <ul className="list-disc pl-4 mt-1 text-sm max-h-32 overflow-auto">
+                      {newBrands.slice(0, 5).map((brand: { name: string }, idx: number) => (
+                        <li key={idx}>{brand.name}</li>
+                      ))}
+                      {newBrands.length > 5 && <li>...and {newBrands.length - 5} more</li>}
+                    </ul>
+                  </div>,
+                  {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true
+                  }
+                );
+              }
+              
+              // Refresh data and notify when complete with react-toastify
+              const refreshPromise = refreshData();
+              toast.promise(
+                refreshPromise,
+                {
+                  pending: 'Updating brands list...',
+                  success: 'Brands list refreshed successfully!',
+                  error: 'Failed to refresh brands'
+                },
+                {
+                  position: "top-right",
+                  autoClose: 3000
+                }
+              );
+            }}
+          />
+
+          <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+            <DialogTrigger asChild>
+              <Button className="gap-1">
+                <Plus className="h-4 w-4" />
+                Add Brand
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New Brand</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Brand Name</Label>
+                  <Input
+                    id="name"
+                    placeholder="Enter brand name"
+                    value={newBrand.name}
+                    onChange={(e) => setNewBrand({ ...newBrand, name: e.target.value })}
+                  />
+                </div>
               </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowAddDialog(false)}>Cancel</Button>
-              <Button onClick={handleAddBrand}>Save Brand</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setShowAddDialog(false)}>Cancel</Button>
+                <Button onClick={handleAddBrand}>Save Brand</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <Card>

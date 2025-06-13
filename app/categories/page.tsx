@@ -11,10 +11,11 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useCRM } from "@/contexts/crm-context"
 import { Category } from "@/lib/types"
 import { Plus, Pencil, Trash2 } from "lucide-react"
-import { toast } from "sonner"
+import { toast } from "react-toastify"
+import { FileUpload } from "@/components/file-upload"
 
 export default function CategoriesPage() {
-  const { data, addCategory, updateCategory, deleteCategory } = useCRM()
+  const { data, addCategory, updateCategory, deleteCategory, refreshData } = useCRM()
   const [searchTerm, setSearchTerm] = useState("")
   const [newCategory, setNewCategory] = useState<Partial<Category>>({ name: "" })
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
@@ -90,34 +91,83 @@ export default function CategoriesPage() {
           />
         </div>
 
-        <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-          <DialogTrigger asChild>
-            <Button className="gap-1">
-              <Plus className="h-4 w-4" />
-              Add Category
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New Category</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Category Name</Label>
-                <Input
-                  id="name"
-                  placeholder="Enter category name"
-                  value={newCategory.name}
-                  onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-                />
+        <div className="flex items-center gap-2">
+          <FileUpload
+            apiEndpoint={`${process.env.NEXT_PUBLIC_API_URL}/categories/bulk-upload`}
+            entityType="category"
+            onUploadSuccess={(newCategories) => {
+              if (newCategories.length === 0) {
+                toast.info("No new categories were added", {
+                  position: "top-right",
+                  autoClose: 5000
+                });
+              } else {
+                toast.success(
+                  <div>
+                    <p className="font-semibold mb-1">Successfully uploaded {newCategories.length} {newCategories.length === 1 ? 'category' : 'categories'}</p>
+                    <ul className="list-disc pl-4 mt-1 text-sm max-h-32 overflow-auto">
+                      {newCategories.slice(0, 5).map((category: { name: string }, idx: number) => (
+                        <li key={idx}>{category.name}</li>
+                      ))}
+                      {newCategories.length > 5 && <li>...and {newCategories.length - 5} more</li>}
+                    </ul>
+                  </div>,
+                  {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true
+                  }
+                );
+              }
+              
+              const refreshPromise = refreshData();
+              toast.promise(
+                refreshPromise,
+                {
+                  pending: 'Updating categories list...',
+                  success: 'Categories list refreshed successfully!',
+                  error: 'Failed to refresh categories'
+                },
+                {
+                  position: "top-right",
+                  autoClose: 3000
+                }
+              );
+            }}
+          />
+
+          <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+            <DialogTrigger asChild>
+              <Button className="gap-1">
+                <Plus className="h-4 w-4" />
+                Add Category
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New Category</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Category Name</Label>
+                  <Input
+                    id="name"
+                    placeholder="Enter category name"
+                    value={newCategory.name}
+                    onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+                  />
+                </div>
               </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowAddDialog(false)}>Cancel</Button>
-              <Button onClick={handleAddCategory}>Save Category</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setShowAddDialog(false)}>Cancel</Button>
+                <Button onClick={handleAddCategory}>Save Category</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <Card>
