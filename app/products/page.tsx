@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -13,7 +13,9 @@ import { ProductDetailsModal } from "@/components/product-details-modal"
 import { ConfirmationDialog } from "@/components/confirmation-dialog"
 import { useCRM } from "@/contexts/crm-context"
 import { toast } from "@/lib/toast"
-import { Plus, Search, Edit, Trash2, AlertTriangle, Eye } from "lucide-react"
+import { Plus, Search, Edit, Trash2, AlertTriangle, Eye, Printer, CheckSquare } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { ProductLabelModal } from "@/components/product-label-modal"
 
 export default function ProductsPage() {
   const { data, addProduct, updateProduct, deleteProduct, addCategory, addBrand } = useCRM()
@@ -25,6 +27,8 @@ export default function ProductsPage() {
   const [showDetailsModal, setShowDetailsModal] = useState(false)
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [productToDelete, setProductToDelete] = useState<string | null>(null)
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([])
+  const [showLabelModal, setShowLabelModal] = useState(false)
 
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc"
@@ -108,6 +112,35 @@ export default function ProductsPage() {
     }
   }
 
+  const handleSelectProduct = (productId: string) => {
+    setSelectedProducts((prev) => {
+      if (prev.includes(productId)) {
+        return prev.filter(id => id !== productId);
+      } else {
+        return [...prev, productId];
+      }
+    });
+  }
+
+  const handleSelectAllProducts = () => {
+    if (selectedProducts.length === paginatedProducts.length) {
+      setSelectedProducts([]);
+    } else {
+      setSelectedProducts(paginatedProducts.map(product => product.id));
+    }
+  }
+
+  const handlePrintLabels = () => {
+    if (selectedProducts.length === 0) {
+      toast.error("Please select at least one product to print labels", {
+        position: "top-right",
+        autoClose: 3000
+      });
+      return;
+    }
+    setShowLabelModal(true);
+  }
+
   return (
     <div className="p-6">
       <div className="mb-6">
@@ -119,19 +152,29 @@ export default function ProductsPage() {
         <CardHeader>
           <div className="flex justify-between items-center">
             <CardTitle>All Products</CardTitle>
-            <ProductForm
-              categories={data.categories}
-              brands={data.brands}
-              onSubmit={addProduct}
-              onAddCategory={addCategory}
-              onAddBrand={addBrand}
-              trigger={
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Product
-                </Button>
-              }
-            />
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                onClick={handlePrintLabels}
+                disabled={selectedProducts.length === 0}
+              >
+                <Printer className="mr-2 h-4 w-4" />
+                Print Labels ({selectedProducts.length})
+              </Button>
+              <ProductForm
+                categories={data.categories}
+                brands={data.brands}
+                onSubmit={addProduct}
+                onAddCategory={addCategory}
+                onAddBrand={addBrand}
+                trigger={
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Product
+                  </Button>
+                }
+              />
+            </div>
           </div>
           <div className="flex items-center space-x-2">
             <Search className="h-4 w-4 text-gray-400" />
@@ -147,6 +190,12 @@ export default function ProductsPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[50px]">
+                  <Checkbox 
+                    checked={paginatedProducts.length > 0 && selectedProducts.length === paginatedProducts.length}
+                    onCheckedChange={handleSelectAllProducts}
+                  />
+                </TableHead>
                 <SortableTableHeader sortKey="name" currentSort={sortConfig} onSort={handleSort}>
                   Name
                 </SortableTableHeader>
@@ -180,6 +229,12 @@ export default function ProductsPage() {
 
                 return (
                   <TableRow key={product.id}>
+                    <TableCell>
+                      <Checkbox 
+                        checked={selectedProducts.includes(product.id)} 
+                        onCheckedChange={() => handleSelectProduct(product.id)}
+                      />
+                    </TableCell>
                     <TableCell className="font-medium">{product.name}</TableCell>
                     <TableCell>{product.reference}</TableCell>
                     <TableCell className="max-w-xs truncate" title={product.description}>
@@ -256,6 +311,14 @@ export default function ProductsPage() {
         confirmText="Delete"
         cancelText="Cancel"
       />
+      
+      {showLabelModal && (
+        <ProductLabelModal
+          products={data.products.filter(product => selectedProducts.includes(product.id))}
+          open={showLabelModal}
+          onOpenChange={setShowLabelModal}
+        />
+      )}
     </div>
   )
 }
