@@ -10,7 +10,13 @@
     "db:migrate": "ts-node server/src/db/runMigration.ts",
     "db:migrate:all": "ts-node server/src/db/runMigration.ts",
     "vercel-build": "next build",
-    "vercel-deploy": "vercel"
+    "vercel-deploy": "vercel",
+    "netlify-build": "node scripts/netlify-deploy.js && next build",
+    "netlify-deploy": "netlify deploy",
+    "netlify-deploy:prod": "netlify deploy --prod",
+    "setup:branches": "node scripts/init-deployment-branches.js",
+    "setup:storage": "node scripts/setup-supabase-storage.js",
+    "deploy": "powershell -ExecutionPolicy Bypass -File scripts/deploy-to-netlify.ps1"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -90,6 +96,7 @@
     "express-rate-limit": "^7.5.0",
     "express-validator": "^7.2.1",
     "helmet": "^8.1.0",
+    "netlify-cli": "^22.1.3",
     "nodemon": "^3.1.10",
     "pg": "^8.16.0",
     "postcss": "^8",

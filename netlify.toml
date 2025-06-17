@@ -1,0 +1,38 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"
+
+# Production context: Branch deploy for main branch
+[context.production]
+  environment = { NODE_ENV = "production" }
+
+# Deploy Preview context: Preview deploys for pull requests
+[context.deploy-preview]
+  environment = { NODE_ENV = "production" }
+
+# Branch deploy context: Branch deploys that aren't from a pull request or the Production branch
+[context.branch-deploy]
+  environment = { NODE_ENV = "production" }
+
+# Staging branch specific settings
+[context.staging]
+  environment = { NODE_ENV = "production", NEXT_PUBLIC_SITE_ENV = "staging" }
+
+# Development branch specific settings
+[context.development]
+  environment = { NODE_ENV = "development", NEXT_PUBLIC_SITE_ENV = "development" }
+
+# Redirects and headers
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+  conditions = {Role = ["admin"]}
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs" 
