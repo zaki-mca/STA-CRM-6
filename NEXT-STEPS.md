@@ -27,7 +27,7 @@ This will apply the SQL migrations in the `supabase/migrations` directory to you
 ## 4. Initialize Supabase Storage Buckets
 
 ```bash
-npx ts-node scripts/setup-storage.ts
+node scripts/setup-storage.js
 ```
 
 This script will create the necessary storage buckets for your application.
