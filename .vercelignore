@@ -1,0 +1,59 @@
+# Node modules and dependencies
+node_modules
+.pnpm-store
+**/node_modules
+.next/cache
+
+# Development files
+.git
+.github
+.editorconfig
+.eslintrc
+.prettierrc
+.vscode
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Server directory - we're using Next.js API routes instead
+server/
+server/node_modules/
+
+# Test/local files
+**/__tests__
+**/*.test.*
+**/*.spec.*
+**/test/
+**/tests/
+coverage
+.env.development
+.env.test
+.env.supabase
+api-test/
+
+# Build artifacts
+.turbo
+out
+dist
+build
+public/temp
+/storybook-static
+
+# Bulk upload templates
+bulk\ upload\ xlsx\ template/
+
+# Documentation
+docs/
+*.md
+!README.md
+!VERCEL-DEPLOY.md
+
+# Local env files
+.env*.local
+!.env.production
+
+# Misc
+.DS_Store
+Thumbs.db 
