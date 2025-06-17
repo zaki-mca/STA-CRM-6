@@ -186,4 +186,7 @@ export interface CRMContextType {
   deleteProfessionalDomain: (id: string) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
   deleteBrand: (id: string) => Promise<void>;
+  bulkUploadCategories: (formData: FormData) => Promise<any>;
+  bulkUploadBrands: (formData: FormData) => Promise<any>;
+  bulkUploadProfessionalDomains: (formData: FormData) => Promise<any>;
 }

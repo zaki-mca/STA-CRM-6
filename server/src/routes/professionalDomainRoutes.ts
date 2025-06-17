@@ -2,6 +2,8 @@ import { Router } from 'express';
 import professionalDomainController from '../controllers/professionalDomainController';
 import { validateRequest } from '../middleware/validateRequest';
 import { professionalDomainSchema, professionalDomainUpdateSchema, professionalDomainIdSchema } from '../config/schemas';
+import upload, { cleanupFiles } from '../middleware/fileUpload';
+import { RequestHandler } from 'express';
 
 const router = Router();
 
@@ -14,5 +16,12 @@ router.delete('/:id', validateRequest(professionalDomainIdSchema), professionalD
 
 // Additional routes
 router.get('/:id/clients', validateRequest(professionalDomainIdSchema), professionalDomainController.getClientsByDomain);
+
+// Bulk upload route
+router.post('/bulk-upload', 
+  (upload.single('file') as unknown) as RequestHandler,
+  (cleanupFiles as unknown) as RequestHandler,
+  professionalDomainController.bulkCreate
+);
 
 export default router; 

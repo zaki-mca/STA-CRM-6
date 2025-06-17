@@ -280,30 +280,159 @@ export const productApi = {
 
 // Category API
 export const categoryApi = {
-  getAll: () => fetchApi('/categories'),
-  getById: (id: string) => fetchApi(`/categories/${id}`),
-  create: (data: any) => fetchApi('/categories', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) => fetchApi(`/categories/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  delete: (id: string) => fetchApi(`/categories/${id}`, { method: 'DELETE' }),
+  getAll: async () => {
+    const response = await fetchApi('/categories');
+    return response;
+  },
+  getById: async (id: string) => {
+    const response = await fetchApi(`/categories/${id}`);
+    return response;
+  },
+  create: async (data: { name: string; description?: string }) => {
+    const response = await fetchApi('/categories', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    return response;
+  },
+  update: async (id: string, data: { name?: string; description?: string }) => {
+    const response = await fetchApi(`/categories/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+    return response;
+  },
+  delete: async (id: string) => {
+    const response = await fetchApi(`/categories/${id}`, {
+      method: 'DELETE',
+    });
+    return response;
+  },
+  bulkUpload: async (formData: FormData) => {
+    // Use native fetch for FormData
+    const url = `${API_BASE_URL}/categories/bulk-upload`;
+    const response = await fetch(url, {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new ApiError(
+        errorData.message || `Failed to upload categories (${response.status})`,
+        response.status,
+        response.statusText
+      );
+    }
+    
+    return response.json();
+  }
 };
 
 // Brand API
 export const brandApi = {
-  getAll: () => fetchApi('/brands'),
-  getById: (id: string) => fetchApi(`/brands/${id}`),
-  create: (data: any) => fetchApi('/brands', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) => fetchApi(`/brands/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  delete: (id: string) => fetchApi(`/brands/${id}`, { method: 'DELETE' }),
+  getAll: async () => {
+    const response = await fetchApi('/brands');
+    return response;
+  },
+  getById: async (id: string) => {
+    const response = await fetchApi(`/brands/${id}`);
+    return response;
+  },
+  create: async (data: { name: string; description?: string }) => {
+    const response = await fetchApi('/brands', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    return response;
+  },
+  update: async (id: string, data: { name?: string; description?: string }) => {
+    const response = await fetchApi(`/brands/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+    return response;
+  },
+  delete: async (id: string) => {
+    const response = await fetchApi(`/brands/${id}`, {
+      method: 'DELETE',
+    });
+    return response;
+  },
+  bulkUpload: async (formData: FormData) => {
+    // Use native fetch for FormData
+    const url = `${API_BASE_URL}/brands/bulk-upload`;
+    const response = await fetch(url, {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new ApiError(
+        errorData.message || `Failed to upload brands (${response.status})`,
+        response.status,
+        response.statusText
+      );
+    }
+    
+    return response.json();
+  }
 };
 
 // Professional Domain API
 export const professionalDomainApi = {
-  getAll: () => fetchApi('/professional-domains'),
-  getById: (id: string) => fetchApi(`/professional-domains/${id}`),
-  create: (data: any) => fetchApi('/professional-domains', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) => fetchApi(`/professional-domains/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  delete: (id: string) => fetchApi(`/professional-domains/${id}`, { method: 'DELETE' }),
-  getClients: (id: string) => fetchApi(`/professional-domains/${id}/clients`),
+  getAll: async () => {
+    const response = await fetchApi('/professional-domains');
+    return response;
+  },
+  getById: async (id: string) => {
+    const response = await fetchApi(`/professional-domains/${id}`);
+    return response;
+  },
+  create: async (data: any) => {
+    const response = await fetchApi('/professional-domains', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    return response;
+  },
+  update: async (id: string, data: any) => {
+    const response = await fetchApi(`/professional-domains/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+    return response;
+  },
+  delete: async (id: string) => {
+    const response = await fetchApi(`/professional-domains/${id}`, {
+      method: 'DELETE',
+    });
+    return response;
+  },
+  bulkUpload: async (formData: FormData) => {
+    // Use native fetch for FormData
+    const url = `${API_BASE_URL}/professional-domains/bulk-upload`;
+    const response = await fetch(url, {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new ApiError(
+        errorData.message || `Failed to upload professional domains (${response.status})`,
+        response.status,
+        response.statusText
+      );
+    }
+    
+    return response.json();
+  },
+  getClientsByDomain: async (id: string) => {
+    const response = await fetchApi(`/professional-domains/${id}/clients`);
+    return response;
+  }
 };
 
 // Invoice API

@@ -418,7 +418,13 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
   // Function to manually refresh data
   const refreshData = () => {
     console.log("Manually refreshing data...")
-    return fetchAllData()
+    return fetchAllData().then(() => {
+      console.log("Data refresh completed successfully");
+      return;
+    }).catch(err => {
+      console.error("Data refresh failed:", err);
+      throw err;
+    });
   }
 
   const addProvider = async (providerData: Omit<Provider, "id" | "createdAt">) => {
@@ -1197,6 +1203,73 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  // Bulk upload categories
+  const bulkUploadCategories = async (formData: FormData) => {
+    try {
+      const response = await categoryApi.bulkUpload(formData);
+      
+      // Add the new categories to the state
+      if (response.data && Array.isArray(response.data)) {
+        setData((prev) => ({
+          ...prev,
+          categories: [...prev.categories, ...response.data],
+        }));
+      }
+      
+      return response;
+    } catch (err: any) {
+      handleApiError(err, "bulk uploading categories");
+      throw err;
+    }
+  }
+
+  // Bulk upload brands
+  const bulkUploadBrands = async (formData: FormData) => {
+    try {
+      const response = await brandApi.bulkUpload(formData);
+      
+      // Add the new brands to the state
+      if (response.data && Array.isArray(response.data)) {
+        setData((prev) => ({
+          ...prev,
+          brands: [...prev.brands, ...response.data],
+        }));
+      }
+      
+      return response;
+    } catch (err: any) {
+      handleApiError(err, "bulk uploading brands");
+      throw err;
+    }
+  }
+
+  // Bulk upload professional domains
+  const bulkUploadProfessionalDomains = async (formData: FormData) => {
+    try {
+      const response = await professionalDomainApi.bulkUpload(formData);
+      
+      // Add the new domains to the state
+      if (response.data && Array.isArray(response.data)) {
+        // Transform the response to match our frontend structure if needed
+        const newDomains = response.data.map((domain: Record<string, any>) => ({
+          ...domain,
+          paymentCode: domain.payment_code || '',
+          createdAt: new Date(domain.created_at)
+        }));
+        
+        setData((prev) => ({
+          ...prev,
+          professionalDomains: [...prev.professionalDomains, ...newDomains],
+        }));
+      }
+      
+      return response;
+    } catch (err: any) {
+      handleApiError(err, "bulk uploading professional domains");
+      throw err;
+    }
+  }
+
   // Clear error message
   const clearError = () => {
     setError(null);
@@ -1236,6 +1309,9 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
         updateInvoice,
         deleteInvoice,
         updateInvoiceStatus,
+        bulkUploadCategories,
+        bulkUploadBrands,
+        bulkUploadProfessionalDomains
       }}
     >
       {children}

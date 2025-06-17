@@ -1,7 +1,9 @@
 import { BaseController } from '../utils/baseController';
 import { Request, Response, NextFunction } from 'express';
 import { query } from '../db';
+import pool from '../db';
 import { catchAsync, AppError } from '../utils/errorHandler';
+import { ParsedRecord, parseFile } from '../utils/fileParser';
 
 class ProfessionalDomainController extends BaseController {
   constructor() {
@@ -68,6 +70,75 @@ class ProfessionalDomainController extends BaseController {
       results: result.rows.length,
       data: result.rows
     });
+  });
+
+  // Add a new method for bulk upload
+  bulkCreate = catchAsync(async (req: Request, res: Response) => {
+    // Ensure file was uploaded
+    if (!req.file) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'No file uploaded'
+      });
+    }
+
+    try {
+      // Parse the file
+      const domains = await parseFile(req.file);
+
+      // Insert domains in a transaction
+      const client = await pool.connect();
+
+      try {
+        await client.query('BEGIN');
+        
+        const results = [];
+        const duplicates = [];
+        
+        for (const domain of domains) {
+          // Check if domain already exists
+          const checkResult = await client.query(
+            `SELECT * FROM ${this.tableName} WHERE name = $1`,
+            [domain.name]
+          );
+          
+          if (checkResult.rows.length > 0) {
+            duplicates.push(domain.name);
+            continue;
+          }
+          
+          // Insert the new domain
+          const result = await client.query(
+            `INSERT INTO ${this.tableName} (name, description, payment_code) VALUES ($1, $2, $3) RETURNING *`,
+            [domain.name, domain.description || '', domain.paymentCode || '']
+          );
+          
+          if (result.rows.length > 0) {
+            results.push(result.rows[0]);
+          }
+        }
+        
+        await client.query('COMMIT');
+        
+        return res.status(201).json({
+          status: 'success',
+          added: results.length,
+          duplicates: duplicates.length,
+          duplicateNames: duplicates,
+          data: results
+        });
+      } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+      } finally {
+        client.release();
+      }
+    } catch (error: any) {
+      return res.status(400).json({
+        status: 'error',
+        message: `Failed to process file: ${error.message}`
+      });
+    }
   });
 }
 

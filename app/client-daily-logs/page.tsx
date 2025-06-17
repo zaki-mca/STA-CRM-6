@@ -777,8 +777,8 @@ export default function ClientDailyLogsPage() {
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button variant="outline" size="sm">
-                                <Lock className="h-4 w-4" />
-                              </Button>
+                            <Lock className="h-4 w-4" />
+                          </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>

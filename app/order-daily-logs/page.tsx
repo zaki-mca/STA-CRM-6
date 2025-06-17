@@ -333,11 +333,7 @@ export default function OrderDailyLogsPage() {
                 console.log(`Successfully added order ${i+1} to log`)
               } catch (err) {
                 console.error(`Failed to add order ${i+1} to log:`, err)
-                toast({
-                  title: `Error adding order ${i+1}`,
-                  description: "There was an issue adding this order. Please try again.",
-                  duration: 5000,
-                })
+                toast.error(`Error adding order ${i+1}: There was an issue adding this order. Please try again.`)
                 // Continue with next order even if this one failed
               }
             }
@@ -349,11 +345,7 @@ export default function OrderDailyLogsPage() {
         // Get the first order ID to use when creating the log
         const firstOrder = addedOrders[0]
         if (!firstOrder || !firstOrder.orderId) {
-          toast({
-            title: "Invalid order data",
-            description: "Could not create log with the selected orders. Please try again.",
-            duration: 3000,
-          })
+          toast.error("Invalid order data: Could not create log with the selected orders. Please try again.")
           return
         }
         
@@ -396,11 +388,7 @@ export default function OrderDailyLogsPage() {
                 console.log(`Successfully added order ${i} to log`);
               } catch (err) {
                 console.error(`Failed to add order ${i} to log:`, err);
-                toast({
-                  title: `Error adding order ${i}`,
-                  description: "There was an issue adding this order. Please try again.",
-                  duration: 5000,
-                })
+                toast.error(`Error adding order ${i}: There was an issue adding this order. Please try again.`);
                 // Continue with next order even if this one failed
               }
             }
@@ -414,11 +402,7 @@ export default function OrderDailyLogsPage() {
       setShowCreateLogForm(false)
       setIsUpdatingLog(false)
       setLogToUpdate(null)
-      toast({
-        title: isUpdatingLog ? "Daily log updated successfully" : "Daily log created successfully",
-        description: `${isUpdatingLog ? "Updated" : "Added"} ${addedOrders.length} orders to ${isUpdatingLog ? "the" : "today's"} log.`,
-        duration: 3000,
-      })
+      toast.success(`${isUpdatingLog ? "Daily log updated successfully" : "Daily log created successfully"}: ${isUpdatingLog ? "Updated" : "Added"} ${addedOrders.length} orders to ${isUpdatingLog ? "the" : "today's"} log.`)
       
       // Close the form dialog without refreshing the page
       setShowCreateLogForm(false);
@@ -429,11 +413,7 @@ export default function OrderDailyLogsPage() {
           console.log(`Fetching fresh log data for newly created log ID: ${newLogId}`);
           
           // Show a loading state while we fetch data
-          toast({
-            title: "Refreshing data...",
-            description: "Getting the latest order log data.",
-            duration: 2000,
-          });
+          toast.info("Refreshing data... Getting the latest order log data.");
           
           // Get the fresh log data
           const freshLog = await getOrderLogById(newLogId);
@@ -488,11 +468,7 @@ export default function OrderDailyLogsPage() {
       }
     } catch (err) {
       console.error("Error submitting daily log:", err);
-      toast({
-        title: "Submission failed",
-        description: "An error occurred while submitting the daily log. Please try again later.",
-        duration: 5000,
-      })
+      toast.error("Submission failed: An error occurred while submitting the daily log. Please try again later.");
     } finally {
       setIsSubmitting(false)
     }
@@ -588,10 +564,7 @@ export default function OrderDailyLogsPage() {
   const handleRefreshLogs = async () => {
     if (!refreshOrderLogs) {
       console.error("refreshOrderLogs function is not available");
-      toast({
-        title: "Refresh failed",
-        description: "Unable to refresh logs due to missing functionality."
-      });
+      toast.error("Refresh failed: Unable to refresh logs due to missing functionality.");
       return;
     }
 
@@ -600,22 +573,13 @@ export default function OrderDailyLogsPage() {
       const freshLogs = await refreshOrderLogs();
       if (freshLogs && freshLogs.length > 0) {
         setOrderLogs(freshLogs);
-        toast({
-          title: "Refresh successful",
-          description: `Successfully refreshed ${freshLogs.length} logs.`
-        });
+        toast.success(`Refresh successful: Successfully refreshed ${freshLogs.length} logs.`);
       } else {
-        toast({
-          title: "No logs found",
-          description: "No logs were returned from the server."
-        });
+        toast.warning("No logs found: No logs were returned from the server.");
       }
     } catch (err) {
       console.error("Error refreshing logs:", err);
-      toast({
-        title: "Refresh failed",
-        description: "An error occurred while refreshing logs. See console for details."
-      });
+      toast.error("Refresh failed: An error occurred while refreshing logs. See console for details.");
     } finally {
       setIsRefreshing(false);
     }
@@ -998,8 +962,8 @@ export default function OrderDailyLogsPage() {
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button variant="outline" size="sm">
-                                <Lock className="h-4 w-4" />
-                              </Button>
+                            <Lock className="h-4 w-4" />
+                          </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>

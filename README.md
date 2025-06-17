@@ -142,33 +142,34 @@ Scan the frontend design and analyze the displayed data structure, including all
 
 todo :
 
-
-
-- bulk add category/brand/professional domaine xls csv import
-
 - data displayed structure
 - display more data for clients in clients daily logs
 - display providers data: phone and adress in invoice details, then display reference and category and brand and unit price in invoice items
 
-- report print template
+- report print template (facture, bon de livraison, bon pour, attestation de prelevement, engagement, ok etiquettes produits, etiquettes clients log, etiquette order logs, stock movements for inventaire)
+- ok add select products and select all option, add product label printing for selected products bulk selection to print use template to customize
 
-- ( Ask before apply ) api product adapt to woocommerce
+- ( Ask before apply : ask ok woocommerce-integration.md) api product adapt to woocommerce
 
-- ok dark mode theme
-
-- bulk delete/select/edit
 - images upload for product
+- add bulk selection delete
+- bulk delete/select/edit
 - issue when update order or invoice product duplicate
 - issue when creating a new product in invoice
 - role and users management 
-
-
+- barcode searching
+- add facilité val chq val dossier, fichier a exporter txt a importer, situations clients, disquette
+- deploy in server
 
 
 - logs
 
 - Product not item
 
+- ok bulk add category/brand/professional domaine xls csv import (fix data only appears when refreshing make it appears instantly after updating the file)
+- ok payment code for professional domain not uploaded from file
+
+- ok dark mode theme
 - ok generate sku when cretin a new product -format-
 
 - ok fix adding in quick actions
@@ -184,7 +185,12 @@ todo :
 
 
 
+
+
 For example, if you want to modify a file and commit the changes, you would:
 Make changes to your files
 Stage the changes with git add . (or specific files)
 Commit with git commit -m "Your commit message"
+push
+
+push commit in github
