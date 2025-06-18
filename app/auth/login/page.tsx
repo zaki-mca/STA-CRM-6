@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { login } = useAuth()
+  const { signIn } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,10 +38,10 @@ export default function LoginPage() {
       return
     }
 
-    const result = await login(email, password)
+    const { error: authError } = await signIn(email, password)
 
-    if (!result.success) {
-      setError(result.error || "Login failed")
+    if (authError) {
+      setError(authError.message || "Failed to sign in. Please check your credentials.")
     }
 
     setIsSubmitting(false)
