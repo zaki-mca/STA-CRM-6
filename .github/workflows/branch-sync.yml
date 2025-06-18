@@ -1,0 +1,118 @@
+name: Branch Synchronization
+
+on:
+  push:
+    branches:
+      - development
+      - staging
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: 'Source branch to sync from'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - staging
+      target_branch:
+        description: 'Target branch to sync to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - main
+
+jobs:
+  sync-branches:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set Git config
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+      
+      - name: Sync branches
+        run: |
+          echo "Syncing from ${{ github.event.inputs.source_branch }} to ${{ github.event.inputs.target_branch }}"
+          
+          # Checkout source branch
+          git checkout ${{ github.event.inputs.source_branch }}
+          git pull origin ${{ github.event.inputs.source_branch }}
+          
+          # Checkout target branch
+          git checkout ${{ github.event.inputs.target_branch }}
+          git pull origin ${{ github.event.inputs.target_branch }}
+          
+          # Merge source into target
+          git merge ${{ github.event.inputs.source_branch }} -m "Merge ${{ github.event.inputs.source_branch }} into ${{ github.event.inputs.target_branch }} [automated]"
+          
+          # Push changes
+          git push origin ${{ github.event.inputs.target_branch }}
+
+  auto-promote-to-staging:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/development' && github.event_name == 'push'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set Git config
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+      
+      - name: Create PR from development to staging
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Update staging with latest development changes
+          title: '[Automated] Update staging with latest development changes'
+          body: |
+            This is an automated PR to promote changes from development to staging.
+            
+            Please review before merging.
+          branch: auto-pr-dev-to-staging
+          base: staging
+
+  auto-promote-to-main:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set Git config
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+      
+      - name: Create PR from staging to main
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Update main with latest staging changes
+          title: '[Automated] Update main with latest staging changes'
+          body: |
+            This is an automated PR to promote changes from staging to main (production).
+            
+            ⚠️ **IMPORTANT**: Please review thoroughly before merging to production.
+          branch: auto-pr-staging-to-main
+          base: main 

@@ -19,7 +19,7 @@ import { useAuth } from "@/contexts/auth-context"
 import { useCRM } from "@/contexts/crm-context"
 import { Search, Bell, Settings, User, LogOut, Shield, Menu, RefreshCw } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import NetworkStatus from "@/components/NetworkStatus"
+import { NetworkStatus } from "@/components/NetworkStatus"
 
 interface HeaderProps {
   onSearch?: (query: string) => void
@@ -29,7 +29,7 @@ interface HeaderProps {
 export function Header({ onSearch, searchPlaceholder = "Search across all data..." }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [isAdmin] = useState(true) // Simplified admin check
-  const { user, logout } = useAuth()
+  const { user, signOut } = useAuth()
   const { refreshData, loading } = useCRM()
 
   // Create type-safe components
@@ -99,18 +99,7 @@ export function Header({ onSearch, searchPlaceholder = "Search across all data..
         {/* Right Side Actions */}
         <div className="flex items-center space-x-2 sm:space-x-4">
           {/* Network Status */}
-          <TooltipProvider>
-            <Tooltip>
-              <TypeSafeTooltipTrigger asChild>
-                <div className="hidden sm:flex">
-                  <NetworkStatus />
-                </div>
-              </TypeSafeTooltipTrigger>
-              <TooltipContent>
-                Network connection status
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <NetworkStatus className="hidden sm:flex" />
 
           {/* Refresh Button */}
           <TooltipProvider>
@@ -158,14 +147,14 @@ export function Header({ onSearch, searchPlaceholder = "Search across all data..
             <TypeSafeDropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <TypeSafeAvatar className="h-8 w-8">
-                  <TypeSafeAvatarFallback>{user?.name?.charAt(0) || "U"}</TypeSafeAvatarFallback>
+                  <TypeSafeAvatarFallback>{user?.email?.charAt(0).toUpperCase() || "U"}</TypeSafeAvatarFallback>
                 </TypeSafeAvatar>
               </Button>
             </TypeSafeDropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <div className="flex items-center justify-start gap-2 p-2">
                 <div className="flex flex-col space-y-1 leading-none">
-                  <p className="font-medium">{user?.name || "User"}</p>
+                  <p className="font-medium">{user?.user_metadata?.name || user?.email || "User"}</p>
                   <p className="w-[200px] truncate text-sm text-muted-foreground">{user?.email || "user@company.dz"}</p>
                 </div>
               </div>
@@ -179,7 +168,7 @@ export function Header({ onSearch, searchPlaceholder = "Search across all data..
                 <span>Settings</span>
               </TypeSafeDropdownMenuItem>
               <DropdownMenuSeparator />
-              <TypeSafeDropdownMenuItem onClick={logout}>
+              <TypeSafeDropdownMenuItem onClick={signOut}>
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log out</span>
               </TypeSafeDropdownMenuItem>

@@ -12,8 +12,6 @@ This document provides the step-by-step process to deploy the STA-CRM applicatio
 2. **Tools Installation:**
    - Node.js 18 or later
    - Git
-   - Netlify CLI (`npm install -g netlify-cli`)
-   - Supabase CLI (optional for advanced setup)
 
 ## Step 1: Set Up Supabase Projects
 
@@ -28,50 +26,64 @@ This document provides the step-by-step process to deploy the STA-CRM applicatio
    - Navigate to the SQL Editor in your Supabase project
    - Copy the contents of `supabase/migrations/00001_initial_schema.sql`
    - Execute the SQL script in each project
-   - OR copy the URL and key for use with `supabase db push` commands
 
-3. **Set Up Storage:**
+3. **Set Up Storage Manually:**
    - In each Supabase project, navigate to Storage
-   - Create the required buckets:
-     ```
-     npm run setup:storage
-     ```
-   - Alternatively, manually create buckets for: `avatars`, `product-images`, `attachments`, etc.
+   - Create the following buckets:
+     - `avatars` (set to public)
+     - `product-images` (set to public)
+     - `attachments`
+     - `invoice-files`
+     - `order-attachments`
+     - `client-attachments`
 
 4. **Get API Keys:**
    - For each project, navigate to Project Settings > API
    - Copy the URL, anon key, and service role key
-   - For each environment, store these safely for the next steps
+   - Store these safely for the next steps
 
 ## Step 2: Set Up Git Branch Structure
 
 1. **Initialize Deployment Branches:**
    ```bash
-   npm run setup:branches
+   git checkout -b main
+   git push -u origin main
+   
+   git checkout main
+   git checkout -b staging
+   git push -u origin staging
+   
+   git checkout main
+   git checkout -b development
+   git push -u origin development
    ```
 
-2. **Push All Branches to Remote:**
-   ```bash
-   git push -u origin main staging development
-   ```
+2. **Prepare Deployment Configuration:**
+   - Make sure all configuration files are committed and pushed to each branch
+   - Each branch should have the appropriate `.env` configuration for its environment
 
-## Step 3: Configure Netlify
+## Step 3: Configure Netlify via Web UI
 
 1. **Create New Site:**
-   - Log in to Netlify Dashboard
-   - Click "New site from Git"
+   - Log in to [Netlify Dashboard](https://app.netlify.com/)
+   - Click "Add new site" > "Import an existing project"
    - Connect to your Git provider
    - Choose the STA-CRM repository
-   - Configure base settings:
+   - Select the branch to deploy (main for production)
+   - Configure build settings:
      - Base directory: (leave blank)
-     - Build command: `npm run netlify-build`
+     - Build command: `npm run build`
      - Publish directory: `.next`
    - Click "Deploy site"
 
-2. **Set Up Branch Deployments:**
+2. **Set Up Branch Deploys:**
    - In Netlify dashboard, navigate to Site Settings > Build & Deploy > Continuous Deployment
    - Enable branch deploys for `staging` and `development`
-   - Set "Branch deploy creating URLs with" to "Pretty URLs"
+   - Set "Branch deploy creating URLs with" to "Pretty URLs" 
+   - This will create URLs like:
+     - Production: `https://your-site.netlify.app`
+     - Staging: `https://staging--your-site.netlify.app`
+     - Development: `https://development--your-site.netlify.app`
 
 3. **Configure Environment Variables:**
    - In Netlify dashboard, navigate to Site Settings > Build & Deploy > Environment
@@ -103,85 +115,108 @@ This document provides the step-by-step process to deploy the STA-CRM applicatio
      NEXT_PUBLIC_SITE_ENV=development
      ```
 
-## Step 4: Deploy
+## Step 4: Manual Deployments
 
-You can deploy using the included deployment script:
+When you want to deploy updates:
 
-```bash
-npm run deploy
-```
+1. **Push Changes to the Appropriate Branch:**
+   ```bash
+   # Example for development branch
+   git checkout development
+   # Make changes
+   git add .
+   git commit -m "Your commit message"
+   git push origin development
+   ```
 
-This interactive script will:
-1. Check if you're logged in to Netlify
-2. Let you select which environment to deploy to
-3. Handle the Git branch switching
-4. Build and deploy the application
-5. Switch back to your original branch
+2. **Netlify Auto Deployment:**
+   - Netlify will automatically detect changes and start the deployment
+   - You can monitor the deployment progress in the Netlify dashboard
 
-## Step 5: Verify and Configure Domains
+3. **Manual Deployment (if needed):**
+   - In Netlify dashboard, go to your site
+   - Navigate to Deploys
+   - Click "Trigger deploy" > "Deploy site"
 
-1. **Check Deployment:**
-   - Visit the Netlify URL to verify deployment was successful
-   - Test functionality with your Supabase backend
+## Step 5: Configure Custom Domain (Optional)
 
-2. **Set Up Custom Domain (Optional):**
+1. **Add Custom Domain:**
    - In Netlify dashboard, navigate to Site Settings > Domain Management
-   - Add custom domain if desired
-   - Configure DNS settings as directed by Netlify
+   - Click "Add custom domain"
+   - Enter your domain name and follow the instructions
+   
+2. **Configure DNS:**
+   - Update your DNS settings as directed by Netlify
+   - For apex domains, point to Netlify's load balancer IPs
+   - For subdomains, create a CNAME record pointing to your Netlify site
 
-## Ongoing Workflow
+## Setting Up Environment Variables
 
-1. **Development Flow:**
+### Netlify Environment Variables
+
+When deploying to Netlify, you need to configure environment variables in the Netlify dashboard:
+
+1. Go to your Netlify site dashboard 
+2. Navigate to **Site settings** > **Environment variables**
+3. Add variables for each environment based on `.env.production`, `.env.staging`, and `.env.development`
+4. For each environment, make sure to set these critical variables:
+   - `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anonymous key
+   - `SUPABASE_SERVICE_ROLE_KEY` - Your Supabase service role key (for admin operations)
+   - `DATABASE_URL` - PostgreSQL connection string for direct database access
+   - `NEXT_PUBLIC_SITE_URL` - The public-facing URL of your site
+   - `NEXT_PUBLIC_SITE_ENV` - The environment name (`production`, `staging`, or `development`)
+   - `NODE_ENV` - Set to `production` for all deployment environments
+   - `JWT_SECRET` - Secret key for JWT authentication
+   - `JWT_EXPIRES_IN` - JWT token expiration time (e.g., `1d` for one day)
+
+### Environment-Specific Deployments
+
+Netlify automatically detects the branch being deployed and applies the corresponding environment variables:
+
+- **Production** (`main` branch): Uses production environment variables
+- **Staging** (`staging` branch): Uses staging environment variables
+- **Development** (`development` branch): Uses development environment variables
+
+For deploy previews (created from pull requests), staging environment variables are used.
+
+## Ongoing Development Workflow
+
+1. **Feature Development:**
    - Create feature branches from `development`
-   - Develop and test in your feature branch
+   - Develop and test locally
    - Create PR to merge into `development`
-   - Netlify will create a preview deployment for your PR
-   - After approval, merge to `development`
+   - After approval, merge to `development` branch
+   - Netlify will automatically deploy to development environment
 
-2. **Moving to Staging:**
-   - Once features are ready in `development`
-   - `git checkout staging`
-   - `git merge development`
-   - `git push origin staging`
-   - Netlify will deploy to your staging environment
+2. **Promotion to Staging:**
+   - Test thoroughly in the development environment
+   - Merge `development` into `staging`: 
+     ```bash
+     git checkout staging
+     git pull
+     git merge development
+     git push origin staging
+     ```
+   - Netlify will automatically deploy to staging environment
 
-3. **Moving to Production:**
-   - After testing in staging
-   - `git checkout main`
-   - `git merge staging`
-   - `git push origin main`
-   - Netlify will deploy to your production environment
-
-## Helpful Commands
-
-- **Deploy to Netlify:**
-  ```
-  npm run deploy
-  ```
-
-- **Initialize Git branches:**
-  ```
-  npm run setup:branches
-  ```
-
-- **Set up Supabase storage:**
-  ```
-  npm run setup:storage
-  ```
-
-- **Deploy directly to production:**
-  ```
-  npm run netlify-deploy:prod
-  ```
-
-See [NETLIFY-DEPLOY.md](./NETLIFY-DEPLOY.md) for more detailed information about the deployment strategy.
+3. **Promotion to Production:**
+   - Test thoroughly in the staging environment
+   - Merge `staging` into `main`: 
+     ```bash
+     git checkout main
+     git pull
+     git merge staging
+     git push origin main
+     ```
+   - Netlify will automatically deploy to production environment
 
 ## Troubleshooting
 
 **Build Failures:**
-- Check Netlify build logs
-- Ensure all dependencies are installed
-- Verify environment variables are set correctly
+- Check Netlify build logs in the dashboard
+- Ensure all environment variables are set correctly
+- Verify your Next.js configuration is compatible with Netlify
 
 **Database Connection Issues:**
 - Verify Supabase URL and keys
@@ -191,4 +226,6 @@ See [NETLIFY-DEPLOY.md](./NETLIFY-DEPLOY.md) for more detailed information about
 **Storage Access Problems:**
 - Check bucket policies
 - Verify storage permissions
-- Ensure correct paths are used in code 
+- Ensure correct paths are used in code
+
+For more detailed deployment guidance, see [NETLIFY-DEPLOY.md](./NETLIFY-DEPLOY.md). 

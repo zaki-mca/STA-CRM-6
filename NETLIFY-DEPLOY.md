@@ -276,4 +276,55 @@ Monitor your deployments using:
 For additional help, refer to:
 - [Netlify Docs](https://docs.netlify.com/)
 - [Supabase Docs](https://supabase.com/docs)
-- [Next.js Deployment Docs](https://nextjs.org/docs/deployment) 
+- [Next.js Deployment Docs](https://nextjs.org/docs/deployment)
+
+## Summary of Netlify Integration Features
+
+We've implemented the following features for Netlify deployment:
+
+### 1. Environment-Specific Configuration
+
+- Created `.env.development`, `.env.staging`, and `.env.production` files for environment-specific variables
+- Updated `netlify.toml` to configure each deployment environment based on the Git branch
+- Added environment indicators in NetworkStatus component
+
+### 2. API Integration
+
+- Created Netlify serverless function proxy for the Express API server
+- Updated the API client to automatically detect environment-specific API URLs
+- Implemented proper error handling and retries for API requests
+
+### 3. Authentication
+
+- Updated the auth context to use Supabase authentication
+- Implemented middleware for protecting routes based on authentication state
+- Added proper session handling for different environments
+
+### 4. Deployment Scripts
+
+- Created deployment scripts for both Windows (PowerShell) and Unix (Bash) environments
+- Set up GitHub Actions for automated branch synchronization
+- Added Netlify build script for preparing both the Next.js app and server for deployment
+
+### 5. Monitoring and Debugging
+
+- Added NetworkStatus component to display API connection status and current environment
+- Implemented proper error handling and logging
+- Created health check endpoints for monitoring
+
+## Deployment Checklist
+
+Before deploying to Netlify, ensure you have:
+
+1. ✓ Set up the three Supabase environments (development, staging, production)
+2. ✓ Created the necessary Supabase storage buckets using our setup script
+3. ✓ Set up environment variables in the Netlify dashboard
+4. ✓ Initialized the three Git branches for deployment
+5. ✓ Configured the Netlify sites for each environment
+6. ✓ Connected the Netlify sites to the appropriate Git branches
+
+## Known Limitations
+
+- File uploads larger than 50MB may need to use Supabase storage directly rather than via the API
+- The free tier of Netlify has limitations on build minutes per month
+- Serverless functions have cold start times that may affect performance on the first request 

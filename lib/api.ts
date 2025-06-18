@@ -1,5 +1,133 @@
-// API configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+// API Client for making requests to our backend API
+// This handles different environments and deployment platforms
+
+// Determine the base URL for API calls based on environment
+const getBaseUrl = () => {
+  // Get site URL from environment
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
+  
+  // If explicitly set API URL exists, use it
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+
+  // In browser context
+  if (typeof window !== 'undefined') {
+    // For local development
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://localhost:3001';
+    }
+    
+    // For deployed environments, use the same domain with /api path
+    return `${window.location.origin}/api`;
+  }
+  
+  // In server context with site URL
+  if (siteUrl) {
+    return `${siteUrl}/api`;
+  }
+  
+  // Fallback for server context without site URL
+  return 'http://localhost:3001';
+};
+
+// Default request options
+const defaultOptions: RequestInit = {
+  headers: {
+    'Content-Type': 'application/json',
+  },
+};
+
+// Generic fetch function with type support
+export async function fetchApi<T = any>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> {
+  // Construct the full URL
+  const baseUrl = getBaseUrl();
+  const url = `${baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+  
+  // Merge default options with provided options
+  const mergedOptions = {
+    ...defaultOptions,
+    ...options,
+    headers: {
+      ...defaultOptions.headers,
+      ...options.headers,
+    },
+  };
+
+  try {
+    // Make the request
+    const response = await fetch(url, mergedOptions);
+    
+    // Handle non-JSON responses
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      
+      // Handle API errors
+      if (!response.ok) {
+        throw new Error(data.message || `API Error: ${response.status}`);
+      }
+      
+      return data;
+    } else {
+      // Handle non-JSON responses like file downloads
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
+      
+      return response as unknown as T;
+    }
+  } catch (error) {
+    console.error('API request failed:', error);
+    throw error;
+  }
+}
+
+// Convenience methods for common HTTP methods
+export const api = {
+  get: <T = any>(endpoint: string, options: RequestInit = {}) => 
+    fetchApi<T>(endpoint, { ...options, method: 'GET' }),
+    
+  post: <T = any>(endpoint: string, data: any, options: RequestInit = {}) =>
+    fetchApi<T>(endpoint, {
+      ...options,
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+    
+  put: <T = any>(endpoint: string, data: any, options: RequestInit = {}) =>
+    fetchApi<T>(endpoint, {
+      ...options,
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+    
+  patch: <T = any>(endpoint: string, data: any, options: RequestInit = {}) =>
+    fetchApi<T>(endpoint, {
+      ...options,
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
+    
+  delete: <T = any>(endpoint: string, options: RequestInit = {}) =>
+    fetchApi<T>(endpoint, { ...options, method: 'DELETE' }),
+
+  // Method for file uploads
+  upload: <T = any>(endpoint: string, formData: FormData, options: RequestInit = {}) =>
+    fetchApi<T>(endpoint, {
+      ...options,
+      method: 'POST',
+      body: formData,
+      headers: {}, // Let the browser set the content type with boundary for multipart/form-data
+    }),
+};
+
+export default api;
+
+// API configuration is now handled by getBaseUrl() above
 
 // Generic API error class
 export class ApiError extends Error {

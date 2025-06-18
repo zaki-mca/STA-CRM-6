@@ -1,151 +1,134 @@
 "use client"
 
 import type React from "react"
-import { createContext, useContext, useState, useEffect } from "react"
+import { createContext, useContext, useEffect, useState, ReactNode } from "react"
 import { useRouter } from "next/navigation"
+import { Session, User } from "@supabase/supabase-js"
+import supabase from "../lib/supabase"
 
-interface User {
-  id: string
-  name: string
-  email: string
-}
-
-interface AuthContextType {
+type AuthContextType = {
   user: User | null
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
-  register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>
-  logout: () => void
-  forgotPassword: (email: string) => Promise<{ success: boolean; error?: string }>
+  session: Session | null
   isLoading: boolean
+  signIn: (email: string, password: string) => Promise<{ error: any }>
+  signUp: (email: string, password: string, userData?: any) => Promise<{ error: any, user: User | null }>
+  signOut: () => Promise<void>
+  resetPassword: (email: string) => Promise<{ error: any }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider")
-  }
-  return context
-}
-
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Session | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
-  // Check for existing session on mount
   useEffect(() => {
-    const checkAuth = async () => {
+    // Check active sessions and sets the user
+    const getSession = async () => {
+      setIsLoading(true)
       try {
-        const token = localStorage.getItem("auth_token")
-        if (token) {
-          // Simulate API call to validate token
-          await new Promise((resolve) => setTimeout(resolve, 500))
-          const userData = localStorage.getItem("user_data")
-          if (userData) {
-            setUser(JSON.parse(userData))
+        const { data: { session } } = await supabase.auth.getSession()
+        setSession(session)
+        setUser(session?.user || null)
+        
+        // Set up Supabase auth state change listener
+        const { data: { subscription } } = await supabase.auth.onAuthStateChange((event, session) => {
+          if (event === "SIGNED_OUT") {
+            setUser(null)
+            setSession(null)
+            router.push("/auth/login")
+          } else if (session) {
+            setSession(session)
+            setUser(session?.user || null)
           }
+        })
+        
+        return () => {
+          subscription.unsubscribe()
         }
       } catch (error) {
-        console.error("Auth check failed:", error)
-        localStorage.removeItem("auth_token")
-        localStorage.removeItem("user_data")
+        console.error("Error checking authentication state:", error)
       } finally {
         setIsLoading(false)
       }
     }
 
-    checkAuth()
-  }, [])
+    getSession()
+  }, [router])
 
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
-    setIsLoading(true)
+  // Sign in with email and password
+  const signIn = async (email: string, password: string) => {
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Mock validation - in real app, this would be an API call
-      if (email === "admin@example.com" && password === "password") {
-        const userData = {
-          id: "1",
-          name: "Admin User",
-          email: email,
-        }
-
-        setUser(userData)
-        localStorage.setItem("auth_token", "mock_token_" + Date.now())
-        localStorage.setItem("user_data", JSON.stringify(userData))
-
-        router.push("/")
-        return { success: true }
-      } else {
-        return { success: false, error: "Invalid email or password" }
-      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      return { error }
     } catch (error) {
-      return { success: false, error: "Login failed. Please try again." }
-    } finally {
-      setIsLoading(false)
+      return { error }
     }
   }
 
-  const register = async (
-    name: string,
-    email: string,
-    password: string,
-  ): Promise<{ success: boolean; error?: string }> => {
-    setIsLoading(true)
+  // Sign up with email and password
+  const signUp = async (email: string, password: string, userData?: any) => {
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Mock registration - in real app, this would be an API call
-      const userData = {
-        id: Date.now().toString(),
-        name: name,
-        email: email,
-      }
-
-      setUser(userData)
-      localStorage.setItem("auth_token", "mock_token_" + Date.now())
-      localStorage.setItem("user_data", JSON.stringify(userData))
-
-      router.push("/")
-      return { success: true }
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: userData || {},
+        },
+      })
+      return { error, user: data.user }
     } catch (error) {
-      return { success: false, error: "Registration failed. Please try again." }
-    } finally {
-      setIsLoading(false)
+      return { error, user: null }
     }
   }
 
-  const forgotPassword = async (email: string): Promise<{ success: boolean; error?: string }> => {
+  // Sign out
+  const signOut = async () => {
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Mock password reset
-      return { success: true }
+      await supabase.auth.signOut()
+      setUser(null)
+      setSession(null)
+      router.push("/auth/login")
     } catch (error) {
-      return { success: false, error: "Failed to send reset email. Please try again." }
+      console.error("Error signing out:", error)
     }
   }
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem("auth_token")
-    localStorage.removeItem("user_data")
-    router.push("/auth/login")
+  // Reset password
+  const resetPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/reset-password`,
+      })
+      return { error }
+    } catch (error) {
+      return { error }
+    }
   }
 
   const value = {
     user,
-    login,
-    register,
-    logout,
-    forgotPassword,
+    session,
     isLoading,
+    signIn,
+    signUp,
+    signOut,
+    resetPassword,
   }
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={value}>
+      {!isLoading && children}
+    </AuthContext.Provider>
+  )
+}
+
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider")
+  }
+  return context
 }

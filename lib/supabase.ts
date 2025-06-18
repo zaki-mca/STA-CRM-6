@@ -1,16 +1,25 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize the Supabase client
-const supabaseUrl = process.env.SUPABASE_URL_NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.SUPABASE_URL_NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+// Initialize the Supabase client with environment variables
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabaseServiceRoleKey = process.env.SUPABASE_URL_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Missing Supabase URL or anon key. Supabase client will not function properly.');
+  throw new Error('Missing Supabase environment variables');
 }
 
-// Create supabase client with anonymous key (for public operations)
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Create a single instance of the Supabase client
+const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+  },
+  // Optional settings based on deployment environment
+  db: {
+    schema: 'public',
+  },
+});
 
 // Create admin client with service role key (for admin operations - use with caution and only server-side)
 export const supabaseAdmin = supabaseServiceRoleKey 
@@ -25,12 +34,17 @@ export async function createBucketIfNotExists(bucketName: string) {
 
   const { data, error } = await supabaseAdmin.storage.getBucket(bucketName);
   
-  if (error && error.statusCode === 404) {
-    // Bucket doesn't exist, create it
-    return supabaseAdmin.storage.createBucket(bucketName, {
-      public: false, // Set to true if you want public access by default
-      fileSizeLimit: 1024 * 1024 * 10, // 10MB
-    });
+  // Check if bucket doesn't exist (error will be present)
+  if (error) {
+    // Check error message or code to determine if it's because the bucket doesn't exist
+    if (error.message?.includes('not found') || error.message?.includes('does not exist')) {
+      // Bucket doesn't exist, create it
+      return supabaseAdmin.storage.createBucket(bucketName, {
+        public: false, // Set to true if you want public access by default
+        fileSizeLimit: 1024 * 1024 * 10, // 10MB
+      });
+    }
+    throw error; // Re-throw any other errors
   }
   
   return { data, error };

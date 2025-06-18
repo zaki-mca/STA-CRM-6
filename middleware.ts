@@ -1,40 +1,71 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
 
-export function middleware(request: NextRequest) {
-  // Get the response
-  const response = NextResponse.next();
+// This middleware handles authentication and environment-specific configurations
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next();
   
-  // Add CORS headers
-  response.headers.set('Access-Control-Allow-Origin', '*');
-  response.headers.set(
-    'Access-Control-Allow-Methods',
-    'GET, POST, PUT, DELETE, OPTIONS'
+  // Create supabase server client
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get: (name) => req.cookies.get(name)?.value,
+        set: (name, value, options) => {
+          res.cookies.set(name, value, options);
+        },
+        remove: (name, options) => {
+          res.cookies.set(name, '', { ...options, maxAge: 0 });
+        },
+      },
+    }
   );
-  response.headers.set(
-    'Access-Control-Allow-Headers',
-    'Content-Type, Authorization'
-  );
-  response.headers.set('Access-Control-Max-Age', '86400');
-
-  // Handle preflight requests
-  if (request.method === 'OPTIONS') {
-    return new NextResponse(null, { 
-      status: 204,
-      headers: response.headers
-    });
+  
+  // Add environment indicator headers for non-production environments
+  const siteEnv = process.env.NEXT_PUBLIC_SITE_ENV || 'development';
+  if (siteEnv !== 'production') {
+    res.headers.set('X-Environment', siteEnv);
   }
   
-  // Add security headers
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('X-Frame-Options', 'DENY');
-  response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-  response.headers.set('X-XSS-Protection', '1; mode=block');
+  // Check auth session
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  // Paths that don't require authentication
+  const publicPaths = [
+    '/auth/login',
+    '/auth/register',
+    '/auth/forgot-password',
+  ];
   
-  return response;
+  // API routes don't go through this middleware
+  if (req.nextUrl.pathname.startsWith('/api/')) {
+    return res;
+  }
+
+  // Check if the route is protected
+  const isPublicPath = publicPaths.includes(req.nextUrl.pathname);
+  
+  // Auth logic: Redirect unauthenticated users to login, except for public paths
+  if (!session && !isPublicPath) {
+    const redirectUrl = new URL('/auth/login', req.url);
+    redirectUrl.searchParams.set('redirectedFrom', req.nextUrl.pathname);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // Redirect authenticated users away from auth pages
+  if (session && isPublicPath) {
+    return NextResponse.redirect(new URL('/', req.url));
+  }
+
+  return res;
 }
 
-// Match all API routes
+// Define which paths this middleware should run on
 export const config = {
-  matcher: '/api/:path*',
-}; 
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.svg|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.gif).*)',
+  ],
+} 
