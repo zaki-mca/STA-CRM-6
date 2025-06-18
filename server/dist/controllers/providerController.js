@@ -13,7 +13,7 @@ class ProviderController extends baseController_1.BaseController {
       ORDER BY created_at DESC
     `);
             // Ensure all providers have the required fields
-            const providers = result.rows.map(provider => ({
+            const providers = result.rows.map((provider) => ({
                 ...provider,
                 // Ensure these fields are never null/undefined for the frontend
                 name: provider.name || '',
@@ -43,16 +43,17 @@ class ProviderController extends baseController_1.BaseController {
                 return next(new errorHandler_1.AppError('Provider not found with this ID', 404));
             }
             // Ensure the provider has all required fields
+            const providerRow = result.rows[0];
             const provider = {
-                ...result.rows[0],
+                ...providerRow,
                 // Ensure these fields are never null/undefined for the frontend
-                name: result.rows[0].name || '',
-                email: result.rows[0].email || '',
-                phone: result.rows[0].phone || '',
-                address: result.rows[0].address || '',
-                contact_person: result.rows[0].contact_person || '',
-                notes: result.rows[0].notes || '',
-                status: result.rows[0].status || 'active'
+                name: providerRow.name || '',
+                email: providerRow.email || '',
+                phone: providerRow.phone || '',
+                address: providerRow.address || '',
+                contact_person: providerRow.contact_person || '',
+                notes: providerRow.notes || '',
+                status: providerRow.status || 'active'
             };
             res.status(200).json({
                 status: 'success',

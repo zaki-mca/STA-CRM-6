@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.orderLogIdSchema = exports.orderLogUpdateSchema = exports.orderLogSchema = exports.clientLogIdSchema = exports.clientLogUpdateSchema = exports.clientLogSchema = exports.orderIdSchema = exports.orderUpdateSchema = exports.orderSchema = exports.invoiceIdSchema = exports.invoiceUpdateSchema = exports.invoiceSchema = exports.professionalDomainIdSchema = exports.professionalDomainUpdateSchema = exports.professionalDomainSchema = exports.brandIdSchema = exports.brandUpdateSchema = exports.brandSchema = exports.categoryIdSchema = exports.categoryUpdateSchema = exports.categorySchema = exports.productIdSchema = exports.productUpdateSchema = exports.productSchema = exports.providerIdSchema = exports.providerUpdateSchema = exports.providerSchema = exports.clientIdSchema = exports.clientUpdateSchema = exports.clientSchema = void 0;
+exports.orderLogEntryIdSchema = exports.orderLogEntryBatchSchema = exports.orderLogEntrySchema = exports.orderLogIdSchema = exports.orderLogUpdateSchema = exports.orderLogSchema = exports.clientLogIdSchema = exports.clientLogUpdateSchema = exports.clientLogSchema = exports.orderIdSchema = exports.orderUpdateSchema = exports.orderSchema = exports.invoiceIdSchema = exports.invoiceUpdateSchema = exports.invoiceSchema = exports.professionalDomainIdSchema = exports.professionalDomainUpdateSchema = exports.professionalDomainSchema = exports.brandIdSchema = exports.brandUpdateSchema = exports.brandSchema = exports.categoryIdSchema = exports.categoryUpdateSchema = exports.categorySchema = exports.productIdSchema = exports.productUpdateSchema = exports.productSchema = exports.providerIdSchema = exports.providerUpdateSchema = exports.providerSchema = exports.clientIdSchema = exports.clientUpdateSchema = exports.clientSchema = void 0;
 const zod_1 = require("zod");
 // Client validation schemas
 exports.clientSchema = zod_1.z.object({
@@ -343,11 +343,20 @@ exports.clientLogUpdateSchema = zod_1.z.object({
     }),
     body: zod_1.z.object({
         client_id: zod_1.z.string().uuid('Invalid client ID').optional(),
+        clientId: zod_1.z.string().uuid('Invalid client ID').optional(),
         description: zod_1.z.string().min(3, 'Description must be at least 3 characters long').optional(),
         log_date: zod_1.z.string().refine((val) => !val || !isNaN(Date.parse(val)), {
             message: 'Invalid date format',
         }).optional(),
         user_id: zod_1.z.string().uuid('Invalid user ID').optional(),
+        action: zod_1.z.string().optional(),
+        notes: zod_1.z.string().optional(),
+        closedAt: zod_1.z.union([
+            zod_1.z.string().refine((val) => !val || !isNaN(Date.parse(val)), {
+                message: 'Invalid date format',
+            }),
+            zod_1.z.date()
+        ]).optional(),
     }),
 });
 exports.clientLogIdSchema = zod_1.z.object({
@@ -358,12 +367,15 @@ exports.clientLogIdSchema = zod_1.z.object({
 // Order logs validation schemas
 exports.orderLogSchema = zod_1.z.object({
     body: zod_1.z.object({
-        order_id: zod_1.z.string().uuid('Invalid order ID'),
         description: zod_1.z.string().min(3, 'Description must be at least 3 characters long'),
         log_date: zod_1.z.string().refine((val) => !isNaN(Date.parse(val)), {
             message: 'Invalid date format',
         }),
         user_id: zod_1.z.string().uuid('Invalid user ID').optional(),
+        orders: zod_1.z.array(zod_1.z.object({
+            order_id: zod_1.z.string().uuid('Invalid order ID'),
+            notes: zod_1.z.string().optional()
+        })).optional(),
     }),
 });
 exports.orderLogUpdateSchema = zod_1.z.object({
@@ -371,17 +383,45 @@ exports.orderLogUpdateSchema = zod_1.z.object({
         id: zod_1.z.string().uuid('Invalid order log ID'),
     }),
     body: zod_1.z.object({
-        order_id: zod_1.z.string().uuid('Invalid order ID').optional(),
         description: zod_1.z.string().min(3, 'Description must be at least 3 characters long').optional(),
         log_date: zod_1.z.string().refine((val) => !val || !isNaN(Date.parse(val)), {
             message: 'Invalid date format',
         }).optional(),
         user_id: zod_1.z.string().uuid('Invalid user ID').optional(),
+        action: zod_1.z.string().optional(),
+        closedAt: zod_1.z.union([
+            zod_1.z.string().refine((val) => !val || !isNaN(Date.parse(val)), {
+                message: 'Invalid date format',
+            }),
+            zod_1.z.date()
+        ]).optional(),
     }),
 });
 exports.orderLogIdSchema = zod_1.z.object({
     params: zod_1.z.object({
         id: zod_1.z.string().uuid('Invalid order log ID'),
+    }),
+});
+// Order log entry validation schemas
+exports.orderLogEntrySchema = zod_1.z.object({
+    body: zod_1.z.object({
+        order_log_id: zod_1.z.string().uuid('Invalid order log ID'),
+        order_id: zod_1.z.string().uuid('Invalid order ID'),
+        notes: zod_1.z.string().optional(),
+    }),
+});
+exports.orderLogEntryBatchSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        order_log_id: zod_1.z.string().uuid('Invalid order log ID'),
+        entries: zod_1.z.array(zod_1.z.object({
+            order_id: zod_1.z.string().uuid('Invalid order ID'),
+            notes: zod_1.z.string().optional(),
+        })),
+    }),
+});
+exports.orderLogEntryIdSchema = zod_1.z.object({
+    params: zod_1.z.object({
+        id: zod_1.z.string().uuid('Invalid order log entry ID'),
     }),
 });
 //# sourceMappingURL=schemas.js.map

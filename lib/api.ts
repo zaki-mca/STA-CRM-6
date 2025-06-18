@@ -31,103 +31,8 @@ const getBaseUrl = () => {
   return 'http://localhost:3001';
 };
 
-// Default request options
-const defaultOptions: RequestInit = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
-
-// Generic fetch function with type support
-export async function fetchApi<T = any>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  // Construct the full URL
-  const baseUrl = getBaseUrl();
-  const url = `${baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
-  
-  // Merge default options with provided options
-  const mergedOptions = {
-    ...defaultOptions,
-    ...options,
-    headers: {
-      ...defaultOptions.headers,
-      ...options.headers,
-    },
-  };
-
-  try {
-    // Make the request
-    const response = await fetch(url, mergedOptions);
-    
-    // Handle non-JSON responses
-    const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
-      const data = await response.json();
-      
-      // Handle API errors
-      if (!response.ok) {
-        throw new Error(data.message || `API Error: ${response.status}`);
-      }
-      
-      return data;
-    } else {
-      // Handle non-JSON responses like file downloads
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
-      }
-      
-      return response as unknown as T;
-    }
-  } catch (error) {
-    console.error('API request failed:', error);
-    throw error;
-  }
-}
-
-// Convenience methods for common HTTP methods
-export const api = {
-  get: <T = any>(endpoint: string, options: RequestInit = {}) => 
-    fetchApi<T>(endpoint, { ...options, method: 'GET' }),
-    
-  post: <T = any>(endpoint: string, data: any, options: RequestInit = {}) =>
-    fetchApi<T>(endpoint, {
-      ...options,
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
-    
-  put: <T = any>(endpoint: string, data: any, options: RequestInit = {}) =>
-    fetchApi<T>(endpoint, {
-      ...options,
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
-    
-  patch: <T = any>(endpoint: string, data: any, options: RequestInit = {}) =>
-    fetchApi<T>(endpoint, {
-      ...options,
-      method: 'PATCH',
-      body: JSON.stringify(data),
-    }),
-    
-  delete: <T = any>(endpoint: string, options: RequestInit = {}) =>
-    fetchApi<T>(endpoint, { ...options, method: 'DELETE' }),
-
-  // Method for file uploads
-  upload: <T = any>(endpoint: string, formData: FormData, options: RequestInit = {}) =>
-    fetchApi<T>(endpoint, {
-      ...options,
-      method: 'POST',
-      body: formData,
-      headers: {}, // Let the browser set the content type with boundary for multipart/form-data
-    }),
-};
-
-export default api;
-
-// API configuration is now handled by getBaseUrl() above
+// Get the API base URL
+export const API_BASE_URL = getBaseUrl();
 
 // Generic API error class
 export class ApiError extends Error {
@@ -142,7 +47,14 @@ export class ApiError extends Error {
   }
 }
 
-// Helper to handle API responses
+// Default request options
+const defaultOptions: RequestInit = {
+  headers: {
+    'Content-Type': 'application/json',
+  },
+};
+
+// Helper function to handle API responses
 async function handleResponse(response: Response) {
   try {
     const contentType = response.headers.get('content-type');
@@ -250,393 +162,94 @@ async function handleResponse(response: Response) {
       }
     }
   } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    
-    console.error('Error processing API response:', error);
-    throw new ApiError('Failed to process API response: ' + (error as Error).message, 500);
+    console.error('Error handling response:', error);
+    throw error;
   }
 }
 
-// Generic fetch wrapper with error handling
-async function fetchApi(endpoint: string, options: RequestInit = {}, retryCount = 0) {
+// Main API fetch function with built-in retries
+export async function fetchApi<T = any>(
+  endpoint: string,
+  options: RequestInit = {},
+  retryCount = 0
+): Promise<T> {
+  const maxRetries = 3;
+  const retryDelay = 1000; // 1 second delay between retries
+  
   try {
-    const url = `${API_BASE_URL}${endpoint}`;
-    const headers = {
-      'Content-Type': 'application/json',
-      ...options.headers,
+    // Construct the full URL
+    const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+    
+    // Merge default options with provided options
+    const mergedOptions = {
+      ...defaultOptions,
+      ...options,
+      headers: {
+        ...defaultOptions.headers,
+        ...options.headers,
+      },
     };
     
-    console.log(`API Request: ${options.method || 'GET'} ${url}`);
-    if (options.body) {
-      try {
-        const bodyObj = JSON.parse(options.body as string);
-        console.log('Request body:', bodyObj);
-      } catch {
-        console.log('Request body (non-JSON or invalid):', options.body);
-      }
-    }
+    console.log(`API Request: ${mergedOptions.method || 'GET'} ${url}`);
     
-    // Add timestamp to avoid caching issues
-    const urlWithTimestamp = url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now();
-    
-    const response = await fetch(urlWithTimestamp, {
-      ...options,
-      headers,
-    });
-    
-    console.log(`API Response: ${response.status} ${response.statusText} from ${response.url}`);
-    
-    // Handle server errors immediately (500, 502, 503, 504)
-    if (response.status >= 500) {
-      console.error(`Server error: ${response.status} ${response.statusText}`);
-      
-      // Extract more detailed error information if possible
-      let errorDetails = '';
-      try {
-        const errorText = await response.text();
-        if (errorText && errorText.trim() !== '') {
-          try {
-            const errorJson = JSON.parse(errorText);
-            errorDetails = errorJson.message || errorJson.error || errorText;
-          } catch {
-            errorDetails = errorText;
-          }
-        }
-      } catch (e) {
-        console.error('Failed to extract error details:', e);
-      }
-      
-      // Create a more informative error message
-      const statusText = response.statusText || 'Internal Server Error';
-      const detailedMessage = errorDetails ? 
-        `Server error (${response.status}): ${statusText}. Details: ${errorDetails}` : 
-        `Server error (${response.status}): ${statusText}`;
-      
-      // Retry logic for server errors (max 2 retries)
-      if (retryCount < 2) {
-        console.log(`Retrying request due to server error (${retryCount + 1}/2)...`);
-        // Wait 1 second before retry with exponential backoff
-        await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1))); // Exponential backoff
-        return fetchApi(endpoint, options, retryCount + 1);
-      }
-      
-      throw new ApiError(detailedMessage, response.status, statusText);
-    }
-    
-    try {
-      return await handleResponse(response);
-    } catch (parseError) {
-      console.error('Error handling response:', parseError);
-      
-      if (parseError instanceof ApiError) {
-        throw parseError;
-      }
-      
-      throw new ApiError('Failed to parse API response: ' + (parseError as Error).message, 
-                         response.status || 500, response.statusText || '');
-    }
+    // Make the request
+    const response = await fetch(url, mergedOptions);
+    const result = await handleResponse(response);
+    return result.data;
   } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
+    console.error(`API request failed (attempt ${retryCount + 1}/${maxRetries + 1}):`, error);
+    
+    // Retry on network errors or 5xx server errors (but not on 4xx client errors)
+    if (
+      retryCount < maxRetries && 
+      (!(error instanceof ApiError) || (error.status >= 500 && error.status < 600))
+    ) {
+      console.log(`Retrying in ${retryDelay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, retryDelay));
+      return fetchApi(endpoint, options, retryCount + 1);
     }
     
-    // Check for specific error types to provide better messages
-    if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-      console.error('Network error details:', error);
-      
-      // Retry logic for network errors (max 2 retries)
-      if (retryCount < 2) {
-        console.log(`Retrying request due to network error (${retryCount + 1}/2)...`);
-        // Wait 1 second before retry with exponential backoff
-        await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
-        return fetchApi(endpoint, options, retryCount + 1);
-      }
-      
-      throw new ApiError('Cannot connect to API server. Please check if the server is running.', 500);
-    }
-    
-    if (error instanceof TypeError && error.message.includes('Cross-Origin Request Blocked')) {
-      throw new ApiError('CORS error: API server rejected the request. Check CORS configuration.', 500);
-    }
-    
-    console.error('API fetch error:', error);
-    throw new ApiError('Network error or server is down: ' + (error as Error).message, 500);
+    throw error;
   }
 }
 
-// Client API
-export const clientApi = {
-  getAll: () => fetchApi('/clients'),
-  getById: (id: string) => fetchApi(`/clients/${id}`),
-  create: (data: any) => fetchApi('/clients', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) => fetchApi(`/clients/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  delete: (id: string) => fetchApi(`/clients/${id}`, { method: 'DELETE' }),
-  getOrders: (id: string) => fetchApi(`/clients/${id}/orders`),
-  getInvoices: (id: string) => fetchApi(`/clients/${id}/invoices`),
-  getLogs: (id: string) => fetchApi(`/clients/${id}/logs`),
-};
-
-// Provider API
-export const providerApi = {
-  getAll: () => fetchApi('/providers'),
-  getById: (id: string) => fetchApi(`/providers/${id}`),
-  create: (data: any) => fetchApi('/providers', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) => fetchApi(`/providers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  delete: (id: string) => fetchApi(`/providers/${id}`, { method: 'DELETE' }),
-  getProducts: (id: string) => fetchApi(`/providers/${id}/products`),
-  getOrders: (id: string) => fetchApi(`/providers/${id}/orders`),
-};
-
-// Product API
-export const productApi = {
-  getAll: () => fetchApi('/products'),
-  getById: (id: string) => fetchApi(`/products/${id}`),
-  create: (data: any) => fetchApi('/products', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) => fetchApi(`/products/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  delete: (id: string) => fetchApi(`/products/${id}`, { method: 'DELETE' }),
-  getByCategory: (categoryId: string) => fetchApi(`/products/category/${categoryId}`),
-  getByBrand: (brandId: string) => fetchApi(`/products/brand/${brandId}`),
-  getLowStock: () => fetchApi('/products/low-stock'),
-  updateQuantity: (id: string, quantity: number) => 
-    fetchApi(`/products/${id}/quantity`, { 
-      method: 'PATCH', 
-      body: JSON.stringify({ quantity }) 
-    }),
-};
-
-// Category API
-export const categoryApi = {
-  getAll: async () => {
-    const response = await fetchApi('/categories');
-    return response;
-  },
-  getById: async (id: string) => {
-    const response = await fetchApi(`/categories/${id}`);
-    return response;
-  },
-  create: async (data: { name: string; description?: string }) => {
-    const response = await fetchApi('/categories', {
+// Convenience methods for common HTTP methods
+export const api = {
+  get: <T = any>(endpoint: string, options: RequestInit = {}) => 
+    fetchApi<T>(endpoint, { ...options, method: 'GET' }),
+    
+  post: <T = any>(endpoint: string, data: any, options: RequestInit = {}) =>
+    fetchApi<T>(endpoint, {
+      ...options,
       method: 'POST',
       body: JSON.stringify(data),
-    });
-    return response;
-  },
-  update: async (id: string, data: { name?: string; description?: string }) => {
-    const response = await fetchApi(`/categories/${id}`, {
+    }),
+    
+  put: <T = any>(endpoint: string, data: any, options: RequestInit = {}) =>
+    fetchApi<T>(endpoint, {
+      ...options,
       method: 'PUT',
       body: JSON.stringify(data),
-    });
-    return response;
-  },
-  delete: async (id: string) => {
-    const response = await fetchApi(`/categories/${id}`, {
-      method: 'DELETE',
-    });
-    return response;
-  },
-  bulkUpload: async (formData: FormData) => {
-    // Use native fetch for FormData
-    const url = `${API_BASE_URL}/categories/bulk-upload`;
-    const response = await fetch(url, {
+    }),
+    
+  patch: <T = any>(endpoint: string, data: any, options: RequestInit = {}) =>
+    fetchApi<T>(endpoint, {
+      ...options,
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
+    
+  delete: <T = any>(endpoint: string, options: RequestInit = {}) =>
+    fetchApi<T>(endpoint, { ...options, method: 'DELETE' }),
+
+  // Method for file uploads
+  upload: <T = any>(endpoint: string, formData: FormData, options: RequestInit = {}) =>
+    fetchApi<T>(endpoint, {
+      ...options,
       method: 'POST',
       body: formData,
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new ApiError(
-        errorData.message || `Failed to upload categories (${response.status})`,
-        response.status,
-        response.statusText
-      );
-    }
-    
-    return response.json();
-  }
-};
-
-// Brand API
-export const brandApi = {
-  getAll: async () => {
-    const response = await fetchApi('/brands');
-    return response;
-  },
-  getById: async (id: string) => {
-    const response = await fetchApi(`/brands/${id}`);
-    return response;
-  },
-  create: async (data: { name: string; description?: string }) => {
-    const response = await fetchApi('/brands', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-    return response;
-  },
-  update: async (id: string, data: { name?: string; description?: string }) => {
-    const response = await fetchApi(`/brands/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
-    return response;
-  },
-  delete: async (id: string) => {
-    const response = await fetchApi(`/brands/${id}`, {
-      method: 'DELETE',
-    });
-    return response;
-  },
-  bulkUpload: async (formData: FormData) => {
-    // Use native fetch for FormData
-    const url = `${API_BASE_URL}/brands/bulk-upload`;
-    const response = await fetch(url, {
-      method: 'POST',
-      body: formData,
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new ApiError(
-        errorData.message || `Failed to upload brands (${response.status})`,
-        response.status,
-        response.statusText
-      );
-    }
-    
-    return response.json();
-  }
-};
-
-// Professional Domain API
-export const professionalDomainApi = {
-  getAll: async () => {
-    const response = await fetchApi('/professional-domains');
-    return response;
-  },
-  getById: async (id: string) => {
-    const response = await fetchApi(`/professional-domains/${id}`);
-    return response;
-  },
-  create: async (data: any) => {
-    const response = await fetchApi('/professional-domains', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-    return response;
-  },
-  update: async (id: string, data: any) => {
-    const response = await fetchApi(`/professional-domains/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
-    return response;
-  },
-  delete: async (id: string) => {
-    const response = await fetchApi(`/professional-domains/${id}`, {
-      method: 'DELETE',
-    });
-    return response;
-  },
-  bulkUpload: async (formData: FormData) => {
-    // Use native fetch for FormData
-    const url = `${API_BASE_URL}/professional-domains/bulk-upload`;
-    const response = await fetch(url, {
-      method: 'POST',
-      body: formData,
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new ApiError(
-        errorData.message || `Failed to upload professional domains (${response.status})`,
-        response.status,
-        response.statusText
-      );
-    }
-    
-    return response.json();
-  },
-  getClientsByDomain: async (id: string) => {
-    const response = await fetchApi(`/professional-domains/${id}/clients`);
-    return response;
-  }
-};
-
-// Invoice API
-export const invoiceApi = {
-  getAll: () => fetchApi('/invoices'),
-  getById: (id: string) => fetchApi(`/invoices/${id}`),
-  create: (data: any) => fetchApi('/invoices', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) => fetchApi(`/invoices/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  delete: (id: string) => fetchApi(`/invoices/${id}`, { method: 'DELETE' }),
-  getByStatus: (status: string) => fetchApi(`/invoices/status/${status}`),
-  updateStatus: (id: string, data: { status: string }) => 
-    fetchApi(`/invoices/${id}/status`, { 
-      method: 'PATCH', 
-      body: JSON.stringify(data) 
+      headers: {}, // Let the browser set the content type with boundary for multipart/form-data
     }),
 };
 
-// Order API
-export const orderApi = {
-  getAll: () => fetchApi('/orders'),
-  getById: (id: string) => fetchApi(`/orders/${id}`),
-  create: (data: any) => fetchApi('/orders', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) => fetchApi(`/orders/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  delete: (id: string) => fetchApi(`/orders/${id}`, { method: 'DELETE' }),
-  getByStatus: (status: string) => fetchApi(`/orders/status/${status}`),
-  updateStatus: (id: string, status: string) => 
-    fetchApi(`/orders/${id}/status`, { 
-      method: 'PATCH', 
-      body: JSON.stringify({ status }) 
-    }),
-  createInvoice: (id: string) => fetchApi(`/orders/${id}/create-invoice`, { method: 'POST' }),
-  getLogs: (id: string) => fetchApi(`/orders/${id}/logs`),
-};
-
-// Client Logs API
-export const clientLogApi = {
-  getAll: () => fetchApi('/client-logs'),
-  getById: (id: string) => fetchApi(`/client-logs/${id}`),
-  create: (data: any) => fetchApi('/client-logs', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) => fetchApi(`/client-logs/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  delete: (id: string) => fetchApi(`/client-logs/${id}`, { method: 'DELETE' }),
-  getByClient: (clientId: string) => fetchApi(`/client-logs/client/${clientId}`),
-  getByDateRange: (startDate: string, endDate: string) => 
-    fetchApi(`/client-logs/date-range?startDate=${startDate}&endDate=${endDate}`),
-  getToday: () => fetchApi('/client-logs/today'),
-};
-
-// Order Logs API
-export const orderLogApi = {
-  getAll: () => fetchApi('/order-logs'),
-  getById: (id: string) => fetchApi(`/order-logs/${id}`),
-  create: (data: any) => fetchApi('/order-logs', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) => fetchApi(`/order-logs/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  delete: (id: string) => fetchApi(`/order-logs/${id}`, { method: 'DELETE' }),
-  getByOrder: (orderId: string) => fetchApi(`/order-logs/order/${orderId}`),
-  getByDateRange: (startDate: string, endDate: string) => 
-    fetchApi(`/order-logs/date-range?start_date=${startDate}&end_date=${endDate}`),
-  getToday: () => fetchApi('/order-logs/today'),
-};
-
-// Order Log Entries API
-export const orderLogEntryApi = {
-  getByLogId: (logId: string) => fetchApi(`/order-log-entries/log/${logId}`),
-  addOrderToLog: (data: { order_log_id: string, order_id: string, notes?: string }) => 
-    fetchApi('/order-log-entries', { 
-      method: 'POST', 
-      body: JSON.stringify(data) 
-    }),
-  addMultipleOrdersToLog: (data: { 
-    order_log_id: string, 
-    entries: Array<{ order_id: string, notes?: string }> 
-  }) => fetchApi('/order-log-entries/batch', { 
-    method: 'POST', 
-    body: JSON.stringify(data) 
-  }),
-  removeOrderFromLog: (entryId: string) => fetchApi(`/order-log-entries/${entryId}`, { 
-    method: 'DELETE' 
-  })
-}; 
+export default api; 
