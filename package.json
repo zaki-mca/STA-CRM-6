@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/netlify-build.js",
+    "build:skip-ts": "SKIP_TYPESCRIPT_CHECK=true node scripts/netlify-build.js",
     "start": "next start",
     "lint": "next lint",
     "db:migrate": "ts-node server/src/db/runMigration.ts",

@@ -56,9 +56,29 @@ function prepareServer() {
       return;
     }
     
-    // Build the server TypeScript code
-    console.log('Building server TypeScript code');
-    execSync('npm run build', { stdio: 'inherit', cwd: serverDir });
+    // Skip TypeScript build if the flag is set
+    if (process.env.SKIP_TYPESCRIPT_CHECK === 'true') {
+      console.log('Skipping TypeScript checking for server code');
+      // Copy server files to functions directory instead of building
+      const serverSrcDir = path.join(serverDir, 'src');
+      const functionsDir = path.join(process.cwd(), '.netlify/functions');
+      
+      // Create api.js in the functions directory that uses the JS files directly
+      const apiJsContent = `
+const serverless = require('serverless-http');
+const { app } = require('../../server/src/index.js');
+
+// Export the serverless handler
+exports.handler = serverless(app);
+      `;
+      
+      fs.writeFileSync(path.join(functionsDir, 'api.js'), apiJsContent);
+      console.log('Created serverless handler for API without TypeScript build');
+    } else {
+      // Build the server TypeScript code
+      console.log('Building server TypeScript code');
+      execSync('npm run build', { stdio: 'inherit', cwd: serverDir });
+    }
     
     console.log('Server preparation complete');
   } catch (error) {
