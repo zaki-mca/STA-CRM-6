@@ -1,13 +1,7 @@
-root@vps:/var/www/stacrm# NODE_ENV=production pnpm build
-
-> my-v0-project@0.1.0 build /var/www/stacrm
-> node scripts/netlify-build.js
-
 Starting Netlify build process
 Set NETLIFY=true environment variable
 Loading environment from .env.development for development environment
 Environment variables loaded from .env.development
-Creating Netlify functions directory
 Preparing server for Netlify Functions deployment
 Building server TypeScript code
 
@@ -16,7 +10,7 @@ Building server TypeScript code
 
 src/index.ts:153:9 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(err: any, req: Request, res: Response, next: NextFunction) => Response<any, Record<string, any>> | undefined' is not assignable to parameter of type 'PathParams'.
+    Argument of type '(err: any, req: Request, res: Response, next: NextFunction                              ) => Response<any, Record<string, any>> | undefined' is not assignable to parame                              ter of type 'PathParams'.
 
 153 app.use(handleError);
             ~~~~~~~~~~~
@@ -27,20 +21,20 @@ src/index.ts:153:9 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/brandRoutes.ts:11:20 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
 11 router.get('/:id', validateRequest(brandIdSchema), brandController.getById);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,20 +45,20 @@ src/routes/brandRoutes.ts:11:20 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/brandRoutes.ts:12:18 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
 12 router.post('/', validateRequest(brandSchema), brandController.create);
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,22 +69,22 @@ src/routes/brandRoutes.ts:12:18 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/brandRoutes.ts:13:20 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-13 router.put('/:id', validateRequest(brandUpdateSchema), brandController.update);
+13 router.put('/:id', validateRequest(brandUpdateSchema), brandController.update                              );
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -99,22 +93,22 @@ src/routes/brandRoutes.ts:13:20 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/brandRoutes.ts:14:23 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-14 router.delete('/:id', validateRequest(brandIdSchema), brandController.delete);
+14 router.delete('/:id', validateRequest(brandIdSchema), brandController.delete)                              ;
                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -123,22 +117,22 @@ src/routes/brandRoutes.ts:14:23 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/categoryRoutes.ts:11:20 - error TS2769: No overload matches this call.
+src/routes/categoryRoutes.ts:11:20 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-11 router.get('/:id', validateRequest(categoryIdSchema), categoryController.getById);
+11 router.get('/:id', validateRequest(categoryIdSchema), categoryController.getB                              yId);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -147,20 +141,20 @@ src/routes/categoryRoutes.ts:11:20 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/categoryRoutes.ts:12:18 - error TS2769: No overload matches this call.
+src/routes/categoryRoutes.ts:12:18 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
 12 router.post('/', validateRequest(categorySchema), categoryController.create);
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -171,22 +165,22 @@ src/routes/categoryRoutes.ts:12:18 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/categoryRoutes.ts:13:20 - error TS2769: No overload matches this call.
+src/routes/categoryRoutes.ts:13:20 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-13 router.put('/:id', validateRequest(categoryUpdateSchema), categoryController.update);
+13 router.put('/:id', validateRequest(categoryUpdateSchema), categoryController.                              update);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -195,22 +189,22 @@ src/routes/categoryRoutes.ts:13:20 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/categoryRoutes.ts:14:23 - error TS2769: No overload matches this call.
+src/routes/categoryRoutes.ts:14:23 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-14 router.delete('/:id', validateRequest(categoryIdSchema), categoryController.delete);
+14 router.delete('/:id', validateRequest(categoryIdSchema), categoryController.d                              elete);
                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -219,22 +213,22 @@ src/routes/categoryRoutes.ts:14:23 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/clientLogRoutes.ts:10:20 - error TS2769: No overload matches this call.
+src/routes/clientLogRoutes.ts:10:20 - error TS2769: No overload matches this cal                              l.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-10 router.get('/:id', validateRequest(clientLogIdSchema), clientLogController.getById);
+10 router.get('/:id', validateRequest(clientLogIdSchema), clientLogController.ge                              tById);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -243,22 +237,22 @@ src/routes/clientLogRoutes.ts:10:20 - error TS2769: No overload matches this cal
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/clientLogRoutes.ts:11:18 - error TS2769: No overload matches this call.
+src/routes/clientLogRoutes.ts:11:18 - error TS2769: No overload matches this cal                              l.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-11 router.post('/', validateRequest(clientLogSchema), clientLogController.create);
+11 router.post('/', validateRequest(clientLogSchema), clientLogController.create                              );
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -267,22 +261,22 @@ src/routes/clientLogRoutes.ts:11:18 - error TS2769: No overload matches this cal
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/clientLogRoutes.ts:12:20 - error TS2769: No overload matches this call.
+src/routes/clientLogRoutes.ts:12:20 - error TS2769: No overload matches this cal                              l.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-12 router.put('/:id', validateRequest(clientLogUpdateSchema), clientLogController.update);
+12 router.put('/:id', validateRequest(clientLogUpdateSchema), clientLogControlle                              r.update);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -291,22 +285,22 @@ src/routes/clientLogRoutes.ts:12:20 - error TS2769: No overload matches this cal
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/clientLogRoutes.ts:13:23 - error TS2769: No overload matches this call.
+src/routes/clientLogRoutes.ts:13:23 - error TS2769: No overload matches this cal                              l.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-13 router.delete('/:id', validateRequest(clientLogIdSchema), clientLogController.delete);
+13 router.delete('/:id', validateRequest(clientLogIdSchema), clientLogController                              .delete);
                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -315,22 +309,22 @@ src/routes/clientLogRoutes.ts:13:23 - error TS2769: No overload matches this cal
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/clientRoutes.ts:10:20 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-10 router.get('/:id', validateRequest(clientIdSchema), clientController.getById);
+10 router.get('/:id', validateRequest(clientIdSchema), clientController.getById)                              ;
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -339,20 +333,20 @@ src/routes/clientRoutes.ts:10:20 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/clientRoutes.ts:11:18 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
 11 router.post('/', validateRequest(clientSchema), clientController.create);
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -363,22 +357,22 @@ src/routes/clientRoutes.ts:11:18 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/clientRoutes.ts:12:20 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-12 router.put('/:id', validateRequest(clientUpdateSchema), clientController.update);
+12 router.put('/:id', validateRequest(clientUpdateSchema), clientController.upda                              te);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -387,22 +381,22 @@ src/routes/clientRoutes.ts:12:20 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/clientRoutes.ts:13:23 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-13 router.delete('/:id', validateRequest(clientIdSchema), clientController.delete);
+13 router.delete('/:id', validateRequest(clientIdSchema), clientController.delet                              e);
                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -411,22 +405,22 @@ src/routes/clientRoutes.ts:13:23 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/clientRoutes.ts:16:27 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-16 router.get('/:id/orders', validateRequest(clientIdSchema), clientController.getClientOrders);
+16 router.get('/:id/orders', validateRequest(clientIdSchema), clientController.g                              etClientOrders);
                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -435,22 +429,22 @@ src/routes/clientRoutes.ts:16:27 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/clientRoutes.ts:17:29 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-17 router.get('/:id/invoices', validateRequest(clientIdSchema), clientController.getClientInvoices);
+17 router.get('/:id/invoices', validateRequest(clientIdSchema), clientController                              .getClientInvoices);
                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -459,22 +453,22 @@ src/routes/clientRoutes.ts:17:29 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/clientRoutes.ts:18:25 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-18 router.get('/:id/logs', validateRequest(clientIdSchema), clientController.getClientLogs);
+18 router.get('/:id/logs', validateRequest(clientIdSchema), clientController.get                              ClientLogs);
                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -483,22 +477,22 @@ src/routes/clientRoutes.ts:18:25 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/invoiceRoutes.ts:16:20 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-16 router.get('/:id', validateRequest(invoiceIdSchema), invoiceController.getById);
+16 router.get('/:id', validateRequest(invoiceIdSchema), invoiceController.getByI                              d);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -507,20 +501,20 @@ src/routes/invoiceRoutes.ts:16:20 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/invoiceRoutes.ts:17:18 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
 17 router.post('/', validateRequest(invoiceSchema), invoiceController.create);
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -531,22 +525,22 @@ src/routes/invoiceRoutes.ts:17:18 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/invoiceRoutes.ts:18:20 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-18 router.put('/:id', validateRequest(invoiceUpdateSchema), invoiceController.update);
+18 router.put('/:id', validateRequest(invoiceUpdateSchema), invoiceController.up                              date);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -555,22 +549,22 @@ src/routes/invoiceRoutes.ts:18:20 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/invoiceRoutes.ts:19:23 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-19 router.delete('/:id', validateRequest(invoiceIdSchema), invoiceController.delete);
+19 router.delete('/:id', validateRequest(invoiceIdSchema), invoiceController.del                              ete);
                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -579,22 +573,22 @@ src/routes/invoiceRoutes.ts:19:23 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/invoiceRoutes.ts:20:29 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-20 router.patch('/:id/status', validateRequest(invoiceIdSchema), invoiceController.updateStatus);
+20 router.patch('/:id/status', validateRequest(invoiceIdSchema), invoiceControll                              er.updateStatus);
                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -603,22 +597,22 @@ src/routes/invoiceRoutes.ts:20:29 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/orderLogEntryRoutes.ts:12:18 - error TS2769: No overload matches this call.
+src/routes/orderLogEntryRoutes.ts:12:18 - error TS2769: No overload matches this                               call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-12 router.post('/', validateRequest(orderLogEntrySchema), orderLogEntryController.addOrderToLog);
+12 router.post('/', validateRequest(orderLogEntrySchema), orderLogEntryControlle                              r.addOrderToLog);
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -627,22 +621,22 @@ src/routes/orderLogEntryRoutes.ts:12:18 - error TS2769: No overload matches this
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/orderLogEntryRoutes.ts:15:23 - error TS2769: No overload matches this call.
+src/routes/orderLogEntryRoutes.ts:15:23 - error TS2769: No overload matches this                               call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-15 router.post('/batch', validateRequest(orderLogEntryBatchSchema), orderLogEntryController.addOrdersBatch);
+15 router.post('/batch', validateRequest(orderLogEntryBatchSchema), orderLogEntr                              yController.addOrdersBatch);
                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -651,22 +645,22 @@ src/routes/orderLogEntryRoutes.ts:15:23 - error TS2769: No overload matches this
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/orderLogEntryRoutes.ts:18:23 - error TS2769: No overload matches this call.
+src/routes/orderLogEntryRoutes.ts:18:23 - error TS2769: No overload matches this                               call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-18 router.delete('/:id', validateRequest(orderLogEntryIdSchema), orderLogEntryController.removeOrderFromLog);
+18 router.delete('/:id', validateRequest(orderLogEntryIdSchema), orderLogEntryCo                              ntroller.removeOrderFromLog);
                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -675,22 +669,22 @@ src/routes/orderLogEntryRoutes.ts:18:23 - error TS2769: No overload matches this
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/orderLogRoutes.ts:15:20 - error TS2769: No overload matches this call.
+src/routes/orderLogRoutes.ts:15:20 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-15 router.get('/:id', validateRequest(orderLogIdSchema), orderLogController.getById);
+15 router.get('/:id', validateRequest(orderLogIdSchema), orderLogController.getB                              yId);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -699,20 +693,20 @@ src/routes/orderLogRoutes.ts:15:20 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/orderLogRoutes.ts:16:18 - error TS2769: No overload matches this call.
+src/routes/orderLogRoutes.ts:16:18 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
 16 router.post('/', validateRequest(orderLogSchema), orderLogController.create);
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -723,22 +717,22 @@ src/routes/orderLogRoutes.ts:16:18 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/orderLogRoutes.ts:17:20 - error TS2769: No overload matches this call.
+src/routes/orderLogRoutes.ts:17:20 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-17 router.put('/:id', validateRequest(orderLogUpdateSchema), orderLogController.update);
+17 router.put('/:id', validateRequest(orderLogUpdateSchema), orderLogController.                              update);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -747,22 +741,22 @@ src/routes/orderLogRoutes.ts:17:20 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/orderLogRoutes.ts:18:23 - error TS2769: No overload matches this call.
+src/routes/orderLogRoutes.ts:18:23 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-18 router.delete('/:id', validateRequest(orderLogIdSchema), orderLogController.delete);
+18 router.delete('/:id', validateRequest(orderLogIdSchema), orderLogController.d                              elete);
                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -771,20 +765,20 @@ src/routes/orderLogRoutes.ts:18:23 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/orderRoutes.ts:10:20 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
 10 router.get('/:id', validateRequest(orderIdSchema), orderController.getById);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -795,20 +789,20 @@ src/routes/orderRoutes.ts:10:20 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/orderRoutes.ts:11:18 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
 11 router.post('/', validateRequest(orderSchema), orderController.create);
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -819,22 +813,22 @@ src/routes/orderRoutes.ts:11:18 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/orderRoutes.ts:12:20 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-12 router.put('/:id', validateRequest(orderUpdateSchema), orderController.update);
+12 router.put('/:id', validateRequest(orderUpdateSchema), orderController.update                              );
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -843,22 +837,22 @@ src/routes/orderRoutes.ts:12:20 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/orderRoutes.ts:13:23 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-13 router.delete('/:id', validateRequest(orderIdSchema), orderController.delete);
+13 router.delete('/:id', validateRequest(orderIdSchema), orderController.delete)                              ;
                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -867,22 +861,22 @@ src/routes/orderRoutes.ts:13:23 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/orderRoutes.ts:17:29 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-17 router.patch('/:id/status', validateRequest(orderIdSchema), orderController.updateStatus);
+17 router.patch('/:id/status', validateRequest(orderIdSchema), orderController.u                              pdateStatus);
                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -891,22 +885,22 @@ src/routes/orderRoutes.ts:17:29 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/orderRoutes.ts:18:36 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-18 router.post('/:id/create-invoice', validateRequest(orderIdSchema), orderController.createInvoice);
+18 router.post('/:id/create-invoice', validateRequest(orderIdSchema), orderContr                              oller.createInvoice);
                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -915,22 +909,22 @@ src/routes/orderRoutes.ts:18:36 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/orderRoutes.ts:19:25 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-19 router.get('/:id/logs', validateRequest(orderIdSchema), orderController.getOrderLogs);
+19 router.get('/:id/logs', validateRequest(orderIdSchema), orderController.getOr                              derLogs);
                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -939,22 +933,22 @@ src/routes/orderRoutes.ts:19:25 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/productRoutes.ts:10:20 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-10 router.get('/:id', validateRequest(productIdSchema), productController.getById);
+10 router.get('/:id', validateRequest(productIdSchema), productController.getByI                              d);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -963,20 +957,20 @@ src/routes/productRoutes.ts:10:20 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/productRoutes.ts:11:18 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
 11 router.post('/', validateRequest(productSchema), productController.create);
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -987,22 +981,22 @@ src/routes/productRoutes.ts:11:18 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/productRoutes.ts:12:20 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-12 router.put('/:id', validateRequest(productUpdateSchema), productController.update);
+12 router.put('/:id', validateRequest(productUpdateSchema), productController.up                              date);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -1011,22 +1005,22 @@ src/routes/productRoutes.ts:12:20 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/productRoutes.ts:13:23 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-13 router.delete('/:id', validateRequest(productIdSchema), productController.delete);
+13 router.delete('/:id', validateRequest(productIdSchema), productController.del                              ete);
                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -1035,22 +1029,22 @@ src/routes/productRoutes.ts:13:23 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
 src/routes/productRoutes.ts:19:31 - error TS2769: No overload matches this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-19 router.patch('/:id/quantity', validateRequest(productIdSchema), productController.updateQuantity);
+19 router.patch('/:id/quantity', validateRequest(productIdSchema), productContro                              ller.updateQuantity);
                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -1059,22 +1053,22 @@ src/routes/productRoutes.ts:19:31 - error TS2769: No overload matches this call.
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/professionalDomainRoutes.ts:12:20 - error TS2769: No overload matches this call.
+src/routes/professionalDomainRoutes.ts:12:20 - error TS2769: No overload matches                               this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-12 router.get('/:id', validateRequest(professionalDomainIdSchema), professionalDomainController.getById);
+12 router.get('/:id', validateRequest(professionalDomainIdSchema), professionalD                              omainController.getById);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -1083,22 +1077,22 @@ src/routes/professionalDomainRoutes.ts:12:20 - error TS2769: No overload matches
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/professionalDomainRoutes.ts:13:18 - error TS2769: No overload matches this call.
+src/routes/professionalDomainRoutes.ts:13:18 - error TS2769: No overload matches                               this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-13 router.post('/', validateRequest(professionalDomainSchema), professionalDomainController.create);
+13 router.post('/', validateRequest(professionalDomainSchema), professionalDomai                              nController.create);
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -1107,22 +1101,22 @@ src/routes/professionalDomainRoutes.ts:13:18 - error TS2769: No overload matches
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/professionalDomainRoutes.ts:14:20 - error TS2769: No overload matches this call.
+src/routes/professionalDomainRoutes.ts:14:20 - error TS2769: No overload matches                               this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-14 router.put('/:id', validateRequest(professionalDomainUpdateSchema), professionalDomainController.update);
+14 router.put('/:id', validateRequest(professionalDomainUpdateSchema), professio                              nalDomainController.update);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -1131,22 +1125,22 @@ src/routes/professionalDomainRoutes.ts:14:20 - error TS2769: No overload matches
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/professionalDomainRoutes.ts:15:23 - error TS2769: No overload matches this call.
+src/routes/professionalDomainRoutes.ts:15:23 - error TS2769: No overload matches                               this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-15 router.delete('/:id', validateRequest(professionalDomainIdSchema), professionalDomainController.delete);
+15 router.delete('/:id', validateRequest(professionalDomainIdSchema), profession                              alDomainController.delete);
                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -1155,22 +1149,22 @@ src/routes/professionalDomainRoutes.ts:15:23 - error TS2769: No overload matches
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/professionalDomainRoutes.ts:18:28 - error TS2769: No overload matches this call.
+src/routes/professionalDomainRoutes.ts:18:28 - error TS2769: No overload matches                               this call.
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-18 router.get('/:id/clients', validateRequest(professionalDomainIdSchema), professionalDomainController.getClientsByDomain);
+18 router.get('/:id/clients', validateRequest(professionalDomainIdSchema), profe                              ssionalDomainController.getClientsByDomain);
                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -1179,22 +1173,22 @@ src/routes/professionalDomainRoutes.ts:18:28 - error TS2769: No overload matches
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/providerRoutes.ts:10:20 - error TS2769: No overload matches this call.
+src/routes/providerRoutes.ts:10:20 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-10 router.get('/:id', validateRequest(providerIdSchema), providerController.getById);
+10 router.get('/:id', validateRequest(providerIdSchema), providerController.getB                              yId);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -1203,20 +1197,20 @@ src/routes/providerRoutes.ts:10:20 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/providerRoutes.ts:11:18 - error TS2769: No overload matches this call.
+src/routes/providerRoutes.ts:11:18 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
 11 router.post('/', validateRequest(providerSchema), providerController.create);
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1227,22 +1221,22 @@ src/routes/providerRoutes.ts:11:18 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/providerRoutes.ts:12:20 - error TS2769: No overload matches this call.
+src/routes/providerRoutes.ts:12:20 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-12 router.put('/:id', validateRequest(providerUpdateSchema), providerController.update);
+12 router.put('/:id', validateRequest(providerUpdateSchema), providerController.                              update);
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -1251,22 +1245,22 @@ src/routes/providerRoutes.ts:12:20 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/providerRoutes.ts:13:23 - error TS2769: No overload matches this call.
+src/routes/providerRoutes.ts:13:23 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-13 router.delete('/:id', validateRequest(providerIdSchema), providerController.delete);
+13 router.delete('/:id', validateRequest(providerIdSchema), providerController.d                              elete);
                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -1275,22 +1269,22 @@ src/routes/providerRoutes.ts:13:23 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/providerRoutes.ts:16:29 - error TS2769: No overload matches this call.
+src/routes/providerRoutes.ts:16:29 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-16 router.get('/:id/products', validateRequest(providerIdSchema), providerController.getProviderProducts);
+16 router.get('/:id/products', validateRequest(providerIdSchema), providerContro                              ller.getProviderProducts);
                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -1299,22 +1293,22 @@ src/routes/providerRoutes.ts:16:29 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.
 
-src/routes/providerRoutes.ts:17:27 - error TS2769: No overload matches this call.
+src/routes/providerRoutes.ts:17:27 - error TS2769: No overload matches this call                              .
   The last overload gave the following error.
-    Argument of type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to parameter of type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-      Type '(req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
-        Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'void | Promise<void>'.
-          Type 'Promise<void | Response<any, Record<string, any>>>' is not assignable to type 'Promise<void>'.
-            Type 'void | Response<any, Record<string, any>>' is not assignable to type 'void'.
-              Type 'Response<any, Record<string, any>>' is not assignable to type 'void'.
+    Argument of type '(req: Request, res: Response, next: NextFunction) => Promi                              se<void | Response<any, Record<string, any>>>' is not assignable to parameter of                               type 'RequestHandlerParams<ParamsDictionary, any, any, ParsedQs, Record<string,                               any>>'.
+      Type '(req: Request, res: Response, next: NextFunction) => Promise<void |                               Response<any, Record<string, any>>>' is not assignable to type 'RequestHandler<P                              aramsDictionary, any, any, ParsedQs, Record<string, any>>'.
+        Type 'Promise<void | Response<any, Record<string, any>>>' is not assigna                              ble to type 'void | Promise<void>'.
+          Type 'Promise<void | Response<any, Record<string, any>>>' is not assig                              nable to type 'Promise<void>'.
+            Type 'void | Response<any, Record<string, any>>' is not assignable t                              o type 'void'.
+              Type 'Response<any, Record<string, any>>' is not assignable to typ                              e 'void'.
 
-17 router.get('/:id/orders', validateRequest(providerIdSchema), providerController.getProviderOrders);
+17 router.get('/:id/orders', validateRequest(providerIdSchema), providerControll                              er.getProviderOrders);
                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ../node_modules/@types/express-serve-static-core/index.d.ts:157:5
@@ -1323,8 +1317,8 @@ src/routes/providerRoutes.ts:17:27 - error TS2769: No overload matches this call
     158         P = ParamsDictionary,
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...
-    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, ReqQuery, LocalsObj>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    166         ...handlers: Array<RequestHandlerParams<P, ResBody, ReqBody, Req                              Query, LocalsObj>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                              ~~~~~~~~~~~~~~~~~~
     167     ): T;
         ~~~~~~~~~
     The last overload is declared here.

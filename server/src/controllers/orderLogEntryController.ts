@@ -9,7 +9,7 @@ class OrderLogEntryController extends BaseController {
   }
 
   // Add a single order to a log
-  addOrderToLog = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  addOrderToLog = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { order_log_id, order_id, notes } = req.body;
     
     // Check if order log exists
@@ -56,7 +56,7 @@ class OrderLogEntryController extends BaseController {
   });
 
   // Add multiple orders to a log in a batch
-  addOrdersBatch = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  addOrdersBatch = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { order_log_id, entries } = req.body;
     
     if (!entries || !Array.isArray(entries) || entries.length === 0) {
@@ -112,7 +112,7 @@ class OrderLogEntryController extends BaseController {
   });
 
   // Get entries for a specific log
-  getEntriesByLogId = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  getEntriesByLogId = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { logId } = req.params;
     
     // Check if order log exists
@@ -144,7 +144,7 @@ class OrderLogEntryController extends BaseController {
   });
 
   // Remove an order from a log
-  removeOrderFromLog = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  removeOrderFromLog = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     
     // Check if entry exists

@@ -9,7 +9,7 @@ class OrderLogController extends BaseController {
   }
 
   // Override getAll to include order details
-  getAll = catchAsync(async (req: Request, res: Response) => {
+  getAll = catchAsync(async (req: Request, res: Response): Promise<void> => {
     // Get all logs
     const result = await query(`
       SELECT ol.*
@@ -51,7 +51,7 @@ class OrderLogController extends BaseController {
   });
 
   // Override getById to include order details
-  getById = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  getById = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     
     // Get the log
@@ -92,7 +92,7 @@ class OrderLogController extends BaseController {
   });
 
   // Override create to handle multiple orders
-  create = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  create = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { description, log_date, user_id, orders } = req.body;
     
     // Start a transaction
@@ -169,7 +169,7 @@ class OrderLogController extends BaseController {
   });
 
   // Override update to handle action-based updates
-  update = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  update = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     const { action } = req.body;
     
@@ -257,7 +257,7 @@ class OrderLogController extends BaseController {
   });
 
   // Get logs by order ID
-  getLogsByOrder = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  getLogsByOrder = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { orderId } = req.params;
     
     // First check if order exists
@@ -286,7 +286,7 @@ class OrderLogController extends BaseController {
   });
 
   // Get logs by date range
-  getLogsByDateRange = catchAsync(async (req: Request, res: Response) => {
+  getLogsByDateRange = catchAsync(async (req: Request, res: Response): Promise<void> => {
     const { start_date, end_date } = req.query;
     
     let query_str = `
@@ -339,16 +339,16 @@ class OrderLogController extends BaseController {
   });
 
   // Get today's logs
-  getTodayLogs = catchAsync(async (req: Request, res: Response) => {
+  getTodayLogs = catchAsync(async (req: Request, res: Response): Promise<void> => {
     const today = new Date().toISOString().split('T')[0];
-    
+
     const result = await query(`
       SELECT ol.*
       FROM order_logs ol
       WHERE ol.log_date = $1
       ORDER BY ol.created_at DESC
     `, [today]);
-    
+
     // Now get the count and details of entries for each log
     const logsWithEntries = await Promise.all(
       result.rows.map(async (log: any) => {
@@ -366,7 +366,7 @@ class OrderLogController extends BaseController {
           WHERE ole.order_log_id = $1
           ORDER BY ole.added_at
         `, [log.id]);
-        
+
         return {
           ...log,
           entries: entriesResult.rows,
@@ -374,7 +374,7 @@ class OrderLogController extends BaseController {
         };
       })
     );
-    
+
     res.status(200).json({
       status: 'success',
       results: logsWithEntries.length,
@@ -383,4 +383,4 @@ class OrderLogController extends BaseController {
   });
 }
 
-export default new OrderLogController(); 
+export default new OrderLogController();

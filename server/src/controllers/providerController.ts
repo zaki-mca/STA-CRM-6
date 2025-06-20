@@ -24,7 +24,7 @@ class ProviderController extends BaseController {
   }
 
   // Override getAll to include all provider fields
-  getAll = catchAsync(async (req: Request, res: Response) => {
+  getAll = catchAsync(async (req: Request, res: Response): Promise<void> => {
     const result = await query(`
       SELECT * FROM providers
       ORDER BY created_at DESC
@@ -54,7 +54,7 @@ class ProviderController extends BaseController {
   });
 
   // Override getById to include all provider fields
-  getById = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  getById = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     
     const result = await query(`
@@ -87,7 +87,7 @@ class ProviderController extends BaseController {
   });
 
   // Get products by provider
-  getProviderProducts = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  getProviderProducts = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     
     // First check if provider exists
@@ -114,7 +114,7 @@ class ProviderController extends BaseController {
   });
 
   // Get orders for a provider
-  getProviderOrders = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  getProviderOrders = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     
     // First check if provider exists

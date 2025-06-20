@@ -28,7 +28,7 @@ class OrderController extends BaseController {
   }
 
   // Override getAll to include client and items directly from products
-  getAll = catchAsync(async (req: Request, res: Response) => {
+  getAll = catchAsync(async (req: Request, res: Response): Promise<void> => {
     const result = await query(`
       SELECT o.*, 
         COALESCE(c.name, 'Unknown Client') as client_name, 
@@ -79,7 +79,7 @@ class OrderController extends BaseController {
   });
 
   // Override getById to include client and items directly from products
-  getById = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  getById = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     
     const result = await query(`
@@ -133,7 +133,7 @@ class OrderController extends BaseController {
   });
 
   // Override create to handle order items with products directly
-  create = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  create = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     // Handle both direct format and frontend format
     let client_id = req.body.client_id;
     let order_date = req.body.order_date;
@@ -266,7 +266,7 @@ class OrderController extends BaseController {
   });
 
   // Override update to handle order items with products directly
-  update = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  update = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     
     // Handle both direct format and frontend format
@@ -481,7 +481,7 @@ class OrderController extends BaseController {
   });
 
   // Override delete to handle order items
-  delete = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  delete = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     
     // Start a transaction
@@ -517,7 +517,7 @@ class OrderController extends BaseController {
   });
 
   // Get orders by status
-  getByStatus = catchAsync(async (req: Request, res: Response) => {
+  getByStatus = catchAsync(async (req: Request, res: Response): Promise<void> => {
     const { status } = req.params;
     
     const result = await query(`
@@ -569,7 +569,7 @@ class OrderController extends BaseController {
   });
 
   // Update order status
-  updateStatus = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  updateStatus = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     const { status } = req.body;
     
@@ -642,7 +642,7 @@ class OrderController extends BaseController {
   });
 
   // Create invoice from order
-  createInvoice = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  createInvoice = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     const { due_date, status = 'draft', notes, tax_rate = 0, provider_id } = req.body;
     
@@ -775,7 +775,7 @@ class OrderController extends BaseController {
   });
 
   // Get order logs
-  getOrderLogs = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  getOrderLogs = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     
     // Check if order exists

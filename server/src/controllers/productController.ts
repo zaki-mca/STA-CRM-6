@@ -30,7 +30,7 @@ class ProductController extends BaseController {
   }
 
   // Override getAll to include category, brand details, and all price fields
-  getAll = catchAsync(async (req: Request, res: Response) => {
+  getAll = catchAsync(async (req: Request, res: Response): Promise<void> => {
     const result = await query(`
       SELECT 
         p.*,
@@ -69,7 +69,7 @@ class ProductController extends BaseController {
   });
 
   // Override getById to include category, brand details, and all price fields
-  getById = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  getById = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     
     const result = await query(`
@@ -114,7 +114,7 @@ class ProductController extends BaseController {
   });
 
   // Override create method to handle all product fields
-  create = catchAsync(async (req: Request, res: Response) => {
+  create = catchAsync(async (req: Request, res: Response): Promise<void> => {
     const { 
       name, description, sell_price, buy_price, quantity, 
       category_id, brand_id, sku, image_url, reference
@@ -167,7 +167,7 @@ class ProductController extends BaseController {
   });
 
   // Override update method to handle all product fields
-  update = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  update = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     const { 
       name, description, sell_price, buy_price, quantity, 
@@ -240,7 +240,7 @@ class ProductController extends BaseController {
   });
 
   // Get products by category
-  getByCategory = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  getByCategory = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { categoryId } = req.params;
     
     // First check if category exists
@@ -287,7 +287,7 @@ class ProductController extends BaseController {
   });
 
   // Get products by brand
-  getByBrand = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  getByBrand = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { brandId } = req.params;
     
     // First check if brand exists
@@ -334,7 +334,7 @@ class ProductController extends BaseController {
   });
 
   // Get low stock products
-  getLowStock = catchAsync(async (req: Request, res: Response) => {
+  getLowStock = catchAsync(async (req: Request, res: Response): Promise<void> => {
     const { threshold = 10 } = req.query;
     
     const result = await query(`
@@ -374,7 +374,7 @@ class ProductController extends BaseController {
   });
 
   // Update product quantity
-  updateQuantity = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  updateQuantity = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     const { quantity, operation = 'set' } = req.body;
     

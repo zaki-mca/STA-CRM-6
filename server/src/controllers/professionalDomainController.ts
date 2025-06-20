@@ -9,7 +9,7 @@ class ProfessionalDomainController extends BaseController {
   }
 
   // Override create method to handle payment_code
-  create = catchAsync(async (req: Request, res: Response) => {
+  create = catchAsync(async (req: Request, res: Response): Promise<void> => {
     const { name, description, payment_code } = req.body;
     
     const result = await query(`
@@ -25,7 +25,7 @@ class ProfessionalDomainController extends BaseController {
   });
 
   // Override update method to handle payment_code
-  update = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  update = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
     const { name, description, payment_code } = req.body;
     
@@ -53,7 +53,7 @@ class ProfessionalDomainController extends BaseController {
   });
 
   // Get clients by professional domain
-  getClientsByDomain = catchAsync(async (req: Request, res: Response) => {
+  getClientsByDomain = catchAsync(async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     
     const result = await query(`
