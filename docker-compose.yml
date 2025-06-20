@@ -1,0 +1,84 @@
+cat > docker-compose.yml << 'EOL'
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16
+    container_name: stacrm-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres  # Use a strong password in production
+      POSTGRES_DB: stacrm
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./server/src/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+
+  # Backend API
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: stacrm-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/stacrm
+      PGUSER: postgres
+      PGHOST: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: stacrm
+      PGPORT: 5432
+      JWT_SECRET: 0182118f76d495a9729c53d51b37199e7407e7a6b1ea1117ca780c3314a28d938927e8548cd7d8a1039106cacad4c115effc7ff4c0bb62d0b074897c4efee1ceb99aa2d031e45ceb3ac48cf4452d95f1dc98cd1906d69a071ed535376aeb1d780a4671e0ba66d3f9d064f5701b866a6b2a0284129ae86f37b50659f59b7c394c5fe0cdcb1d4fbcd0123223b413cd2f88410f01693c58f13007cd24b0ecfb54f829541e7639f6041699e4ea8aa219012b10e07798f3f5537986941121d69825a8dee5fdc3660f25bfb8829a85093959edb5f14ad66dd5c4654e55c03de46d57139b6c4573e353df8f4a5c9c46c98ec41c20b17074fb94d1357994b29e6bb8bcb3
+      JWT_EXPIRES_IN: 1d
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./server/uploads:/app/uploads
+
+  # Frontend Next.js
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: stacrm-frontend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://164.90.177.106:5000/api
+      NEXT_PUBLIC_SITE_URL: http://164.90.177.106
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:stable
+    container_name: stacrm-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      # - "443:443"  # Uncomment for SSL
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      # - ./ssl:/etc/nginx/ssl  # Uncomment for SSL
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  postgres-data:
+EOL

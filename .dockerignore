@@ -1,0 +1,47 @@
+# Git
+.git
+.gitignore
+
+# Node.js
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Build outputs
+.next
+out
+dist
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Project-specific
+docker-compose.yml
+Dockerfile*
+.dockerignore
+README.md
+LICENSE
+.vscode
+.idea
+*.zip
+*.tar.gz
+*.md
+.cursor
+.roo
+.taskmasterconfig
+.roomodes
+tasks
+
+# Specific large files
+STA-CRM-6.0.zip
+.next.zip
+
+# Logs
+logs
+*.log
+
+# Coverage directory
+coverage 

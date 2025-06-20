@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+
+# Node.js
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Build outputs
+dist
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Project-specific
+Dockerfile
+.dockerignore
+README.md
+LICENSE
+.vscode
+.idea
+*.zip
+*.tar.gz
+
+# Logs
+logs
+*.log
+
+# Coverage directory
+coverage
+
+# Keep uploads directory but clean any test files
+uploads/*
+!uploads/.gitkeep 
