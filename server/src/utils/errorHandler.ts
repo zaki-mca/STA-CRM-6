@@ -15,28 +15,30 @@ export class AppError extends Error {
   }
 }
 
-export const handleError = (err: any, req: Request, res: Response, next: NextFunction) => {
+export const handleError = (err: any, req: Request, res: Response, next: NextFunction): void => {
   const statusCode = err.statusCode || 500;
   const status = err.status || 'error';
   
   // Handle PostgreSQL specific errors
   if (err.code && err.code.startsWith('23')) {
     // 23XXX are integrity constraint violations in PostgreSQL
-    return res.status(400).json({
+    res.status(400).json({
       status: 'error',
       message: 'Database constraint violation. Please check your input.',
       error: process.env.NODE_ENV === 'development' ? err : undefined
     });
+    return;
   }
 
   // Handle other database errors
   if (err.code && err.code.startsWith('42')) {
     // 42XXX are syntax errors or access rule violations in PostgreSQL
-    return res.status(500).json({
+    res.status(500).json({
       status: 'error',
       message: 'Database query error.',
       error: process.env.NODE_ENV === 'development' ? err : undefined
     });
+    return;
   }
 
   res.status(statusCode).json({
@@ -48,7 +50,7 @@ export const handleError = (err: any, req: Request, res: Response, next: NextFun
 };
 
 // Updated version with proper typing for Express
-export const catchAsync = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {
+export const catchAsync = (fn: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
