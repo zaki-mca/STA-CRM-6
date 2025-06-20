@@ -64,7 +64,102 @@ match the forms fields with the datatable schemma by creating fields in database
 
 # STA-CRM 6.0
 
-Customer Relationship Management system with full-featured backend API and modern React frontend.
+A modern CRM system built with Next.js, Express, and PostgreSQL.
+
+## Authentication System
+
+The CRM implements a secure, production-ready authentication system with the following features:
+
+### Security Features
+
+- JWT-based authentication with access and refresh tokens
+- Secure password hashing using bcrypt
+- Email verification for new accounts
+- Password reset functionality
+- Session management with IP tracking
+- Rate limiting to prevent brute force attacks
+- Audit logging for security events
+- Role-based access control (admin, manager, user)
+- Account lockout after failed login attempts
+- Secure session handling with automatic cleanup
+
+### Database Tables
+
+- `users`: Stores user accounts and profile information
+- `refresh_tokens`: Manages JWT refresh tokens
+- `user_sessions`: Tracks active user sessions
+- `auth_audit_logs`: Logs authentication events
+
+### API Endpoints
+
+#### Public Routes
+
+- `POST /auth/register`: Create a new user account
+- `POST /auth/login`: Authenticate user and get tokens
+- `POST /auth/forgot-password`: Request password reset
+- `POST /auth/reset-password`: Reset password with token
+- `GET /auth/verify-email/:token`: Verify email address
+
+#### Protected Routes
+
+- `POST /auth/refresh-token`: Get new access token
+- `POST /auth/logout`: End user session
+
+### Rate Limiting
+
+- General API: 100 requests per 15 minutes
+- Authentication: 5 attempts per 15 minutes
+- Password Reset: 3 requests per hour
+
+### Environment Variables
+
+Copy `.env.example` to `.env` and configure:
+
+```env
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=sta_crm
+DB_USER=postgres
+DB_PASSWORD=change_this_password
+DB_SSL=false
+
+# JWT Configuration
+JWT_SECRET=change_this_to_a_secure_random_string_min_32_chars
+JWT_REFRESH_SECRET=change_this_to_another_secure_random_string_min_32_chars
+```
+
+### Security Best Practices
+
+1. **Password Storage**
+   - Passwords are hashed using bcrypt
+   - Salt rounds configurable via environment variables
+   - Minimum password length enforced
+
+2. **Session Security**
+   - JWT tokens with short expiration
+   - Refresh token rotation
+   - IP-based session tracking
+   - Automatic session cleanup
+
+3. **Account Protection**
+   - Email verification required
+   - Account lockout after 5 failed attempts
+   - Password reset with expiring tokens
+   - Rate limiting on sensitive endpoints
+
+4. **Audit Trail**
+   - All authentication events logged
+   - IP address and user agent tracking
+   - Detailed error logging
+
+### Default Admin Account
+
+The system creates a default admin account during initial setup:
+- Email: admin@example.com
+- Password: change_this_password
+
+**Important**: Change the default admin password immediately after first login.
 
 ## Database Schema Updates
 

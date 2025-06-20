@@ -1,79 +1,34 @@
-import { Pool, PoolClient } from 'pg';
+import pgPromise from 'pg-promise';
 import dotenv from 'dotenv';
 import path from 'path';
 
 // Load environment variables from .env file
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-// Connection settings
-const connectionConfig = {
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  max: 20, // Maximum number of clients in the pool
-  idleTimeoutMillis: 30000, // How long a client is allowed to remain idle before being closed
-  connectionTimeoutMillis: 5000, // Increased timeout for connection
+const pgp = pgPromise();
+
+const config = {
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432'),
+  database: process.env.DB_NAME || 'sta_crm',
+  user: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASSWORD || 'postgres',
+  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
 };
 
-// Create a connection pool
-const pool = new Pool(connectionConfig);
+export const db = pgp(config);
 
-// Connection management
-let isConnected = false;
-let connectionRetries = 0;
-const MAX_RETRIES = 5;
-
-// Monitor pool events
-pool.on('connect', (client) => {
-  isConnected = true;
-  connectionRetries = 0;
-  console.log('New client connected to PostgreSQL database');
-});
-
-pool.on('error', (err, client) => {
-  isConnected = false;
-  console.error('Unexpected error on idle client', err);
-  
-  // Attempt reconnection if within retry limits
-  if (connectionRetries < MAX_RETRIES) {
-    connectionRetries++;
-    console.log(`Attempting to reconnect (retry ${connectionRetries}/${MAX_RETRIES})...`);
-    setTimeout(() => {
-      testConnection();
-    }, 5000 * connectionRetries); // Exponential backoff
-  } else {
-    console.error(`Failed to reconnect after ${MAX_RETRIES} attempts`);
-  }
-});
-
-// Test the connection
-const testConnection = async () => {
-  let client: PoolClient | null = null;
+// Helper function to check database connection
+export const checkConnection = async () => {
   try {
-    client = await pool.connect();
-    console.log('Connected to PostgreSQL database');
-    isConnected = true;
-    connectionRetries = 0;
-  } catch (err) {
-    isConnected = false;
-    console.error('Error connecting to PostgreSQL database:', err);
-    
-    // Attempt reconnection if within retry limits
-    if (connectionRetries < MAX_RETRIES) {
-      connectionRetries++;
-      console.log(`Attempting to reconnect (retry ${connectionRetries}/${MAX_RETRIES})...`);
-      setTimeout(() => {
-        testConnection();
-      }, 5000 * connectionRetries); // Exponential backoff
-    }
-  } finally {
-    if (client) {
-      client.release();
-    }
+    await db.one('SELECT 1');
+    console.log('Database connection successful');
+    return true;
+  } catch (error) {
+    console.error('Database connection error:', error);
+    return false;
   }
 };
-
-// Initial connection test
-testConnection();
 
 // Query function with enhanced logging, retries and robust error handling
 export async function query(text: string, params: any[] = []): Promise<any> {
@@ -92,7 +47,7 @@ export async function query(text: string, params: any[] = []): Promise<any> {
     console.debug('DB Query:', queryDebugInfo);
     
     // Get client from pool
-    client = await pool.connect();
+    client = await db.connect();
     
     // Run query with timing
     const start = Date.now();
@@ -145,8 +100,8 @@ export async function query(text: string, params: any[] = []): Promise<any> {
 }
 
 // Transaction support
-export async function withTransaction<T>(callback: (client: PoolClient) => Promise<T>): Promise<T> {
-  const client = await pool.connect();
+export async function withTransaction<T>(callback: (client: any) => Promise<T>): Promise<T> {
+  const client = await db.connect();
   try {
     await client.query('BEGIN');
     const result = await callback(client);
@@ -172,4 +127,4 @@ export async function checkHealth(): Promise<boolean> {
 }
 
 // Export the pool for direct use if needed
-export default pool; 
+export default db; 
