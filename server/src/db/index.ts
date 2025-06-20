@@ -5,7 +5,19 @@ import path from 'path';
 // Load environment variables from .env file
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-const pgp = pgPromise();
+const pgp = pgPromise({
+  // Initialization options
+  error(err, e) {
+    if (e.cn) {
+      // Connection-related error
+      console.error('DB Connection Error:', err);
+    }
+    if (e.query) {
+      // Query-related error
+      console.error('Query Error:', err);
+    }
+  }
+});
 
 const config = {
   host: process.env.DB_HOST || 'localhost',
@@ -30,28 +42,20 @@ export const checkConnection = async () => {
   }
 };
 
-// Query function with enhanced logging, retries and robust error handling
+// Query function with enhanced logging and error handling
 export async function query(text: string, params: any[] = []): Promise<any> {
-  let client;
   try {
     // Truncate long queries for logging
     const truncatedText = text.length > 200 ? `${text.substring(0, 200)}...` : text;
     
-    // Debug info for query planning and potential issues
-    const queryDebugInfo = {
+    console.debug('DB Query:', {
       query: truncatedText,
       paramCount: params.length,
       timestamp: new Date().toISOString()
-    };
+    });
     
-    console.debug('DB Query:', queryDebugInfo);
-    
-    // Get client from pool
-    client = await db.connect();
-    
-    // Run query with timing
     const start = Date.now();
-    const result = await client.query(text, params);
+    const result = await db.query(text, params);
     const duration = Date.now() - start;
     
     // Log slow queries (over 500ms)
@@ -67,7 +71,6 @@ export async function query(text: string, params: any[] = []): Promise<any> {
     
     return result;
   } catch (err: any) {
-    // Enhanced error handling with better context
     console.error('Database query error:', {
       error: err.message,
       code: err.code,
@@ -89,30 +92,13 @@ export async function query(text: string, params: any[] = []): Promise<any> {
       throw new Error(`Column not found: ${err.message}`);
     }
     
-    // Re-throw with more context
     throw err;
-  } finally {
-    // Always release the client back to the pool
-    if (client) {
-      client.release();
-    }
   }
 }
 
 // Transaction support
-export async function withTransaction<T>(callback: (client: any) => Promise<T>): Promise<T> {
-  const client = await db.connect();
-  try {
-    await client.query('BEGIN');
-    const result = await callback(client);
-    await client.query('COMMIT');
-    return result;
-  } catch (e) {
-    await client.query('ROLLBACK');
-    throw e;
-  } finally {
-    client.release();
-  }
+export async function withTransaction<T>(callback: (t: any) => Promise<T>): Promise<T> {
+  return db.tx(callback);
 }
 
 // Export enhanced health check function
@@ -126,5 +112,5 @@ export async function checkHealth(): Promise<boolean> {
   }
 }
 
-// Export the pool for direct use if needed
+// Export the db instance for direct use if needed
 export default db; 
