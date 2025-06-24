@@ -9,6 +9,7 @@ import { DailyLogsProvider } from "@/contexts/daily-logs-context"
 import { ToastProvider } from "@/components/toast-provider"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AppContent } from "@/components/app-content"
+import NetworkStatus from "@/components/NetworkStatus"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -33,6 +34,7 @@ export default function RootLayout({
                 <DailyLogsProvider>
                   <ToastProvider>
                     <AppContent>{children}</AppContent>
+                    <NetworkStatus pollingInterval={15000} />
                   </ToastProvider>
                 </DailyLogsProvider>
               </OrderProvider>

@@ -10,6 +10,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const express_rate_limit_1 = require("express-rate-limit");
 const path_1 = __importDefault(require("path"));
 // Import routes
+const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const clientRoutes_1 = __importDefault(require("./routes/clientRoutes"));
 const providerRoutes_1 = __importDefault(require("./routes/providerRoutes"));
 const productRoutes_1 = __importDefault(require("./routes/productRoutes"));
@@ -20,45 +21,34 @@ const orderRoutes_1 = __importDefault(require("./routes/orderRoutes"));
 const professionalDomainRoutes_1 = __importDefault(require("./routes/professionalDomainRoutes"));
 const clientLogRoutes_1 = __importDefault(require("./routes/clientLogRoutes"));
 const orderLogRoutes_1 = __importDefault(require("./routes/orderLogRoutes"));
+const orderLogEntryRoutes_1 = __importDefault(require("./routes/orderLogEntryRoutes"));
 // Import error handler
 const errorHandler_1 = require("./utils/errorHandler");
 // Setup DB connection
 require("./db");
+const db_1 = require("./db");
+const monitoring_1 = require("./utils/monitoring");
 // Load environment variables
 dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '../.env') });
-// Initialize express app
+// Create Express app
 const app = (0, express_1.default)();
-const PORT = process.env.PORT || 5000;
-// Apply middlewares
-app.use((0, helmet_1.default)()); // Security headers
-app.use(express_1.default.json({ limit: '10mb' })); // Parse JSON bodies
-app.use(express_1.default.urlencoded({ extended: true, limit: '10mb' })); // Parse URL-encoded bodies
-// Configure CORS
-const corsOptions = {
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'], // Frontend URL(s)
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true, // Allow cookies if using authentication
-    optionsSuccessStatus: 204,
-};
-app.use((0, cors_1.default)(corsOptions)); // Enable CORS with options
-// Apply rate limiting
+// Set security HTTP headers
+app.use((0, helmet_1.default)());
+// Enable CORS
+app.use((0, cors_1.default)());
+// Rate limiting
 const limiter = (0, express_rate_limit_1.rateLimit)({
-    windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // limit each IP to 100 requests per windowMs
-    standardHeaders: true,
-    legacyHeaders: false,
+    windowMs: 60 * 60 * 1000, // 1 hour
+    message: 'Too many requests from this IP, please try again in an hour!'
 });
+// Apply rate limiter to all routes
 app.use(limiter);
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-    res.status(200).json({
-        status: 'success',
-        message: 'Server is running',
-        timestamp: new Date()
-    });
-});
-// API routes
+// Body parser, reading data from body into req.body
+app.use(express_1.default.json({ limit: '10kb' }));
+app.use(express_1.default.urlencoded({ extended: true, limit: '10kb' }));
+// Routes
+app.use('/api/auth', authRoutes_1.default);
 app.use('/api/clients', clientRoutes_1.default);
 app.use('/api/providers', providerRoutes_1.default);
 app.use('/api/products', productRoutes_1.default);
@@ -69,14 +59,41 @@ app.use('/api/orders', orderRoutes_1.default);
 app.use('/api/professional-domains', professionalDomainRoutes_1.default);
 app.use('/api/client-logs', clientLogRoutes_1.default);
 app.use('/api/order-logs', orderLogRoutes_1.default);
+app.use('/api/order-log-entries', orderLogEntryRoutes_1.default);
+// Health check endpoint
+app.get('/health', async (req, res) => {
+    const dbHealth = await (0, db_1.checkHealth)();
+    res.json({
+        status: dbHealth.healthy ? 'ok' : 'error',
+        timestamp: new Date(),
+        db: dbHealth
+    });
+});
 // Handle undefined routes
 app.all('*', (req, res, next) => {
     next(new errorHandler_1.AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
-// Global error handler
+// Error handling middleware
 app.use(errorHandler_1.handleError);
-// Start the server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
+// Start server
+const port = Number(process.env.PORT) || 3001;
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server is running on port ${port}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    // Log important configuration (without sensitive details)
+    console.log(`Database host: ${process.env.DB_HOST || 'Not configured'}`);
+    console.log(`Database name: ${process.env.DB_NAME || 'Not configured'}`);
+    // Start server monitoring
+    monitoring_1.serverMonitor.start();
+    // Perform initial health check
+    (0, db_1.checkHealth)().then(health => {
+        if (!health.healthy) {
+            console.error(`WARNING: Database connection issue: ${health.details}`);
+            console.error('The server started but database connection failed. API calls requiring database access will fail.');
+        }
+        else {
+            console.log('Database connection verified successfully.');
+        }
+    });
 });
 //# sourceMappingURL=index.js.map

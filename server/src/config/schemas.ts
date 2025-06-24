@@ -1,5 +1,30 @@
 import { z } from 'zod';
 
+// Auth validation schemas
+export const loginSchema = z.object({
+  body: z.object({
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(6, 'Password must be at least 6 characters long')
+  })
+});
+
+export const registerSchema = z.object({
+  body: z.object({
+    username: z.string().min(2, 'Username must be at least 2 characters long'),
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(6, 'Password must be at least 6 characters long'),
+    firstName: z.string().min(2, 'First name must be at least 2 characters long'),
+    lastName: z.string().min(2, 'Last name must be at least 2 characters long'),
+    isAdmin: z.boolean().optional()
+  })
+});
+
+export const forgotPasswordSchema = z.object({
+  body: z.object({
+    email: z.string().email('Invalid email address')
+  })
+});
+
 // Client validation schemas
 export const clientSchema = z.object({
   body: z.object({

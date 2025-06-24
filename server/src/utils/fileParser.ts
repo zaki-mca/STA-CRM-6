@@ -1,6 +1,6 @@
 import fs from 'fs';
 import csv from 'csv-parser';
-import xlsx from 'xlsx';
+import ExcelJS from 'exceljs';
 import { parse as csvParse } from 'papaparse';
 
 // Define the file type since Express.Multer is not recognized
@@ -67,34 +67,56 @@ function parseCSV(file: UploadedFile): Promise<ParsedRecord[]> {
   });
 }
 
-function parseExcel(file: UploadedFile): Promise<ParsedRecord[]> {
-  return new Promise((resolve, reject) => {
-    try {
-      const workbook = xlsx.readFile(file.path);
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const data = xlsx.utils.sheet_to_json<Record<string, any>>(worksheet);
-      
-      const results: ParsedRecord[] = data.map((row: Record<string, any>) => {
-        // Normalize column names to handle differently named columns
-        const record: ParsedRecord = {
-          name: row.name || row.Name || row.NAME || row.title || row.Title || '',
-          description: row.description || row.Description || row.desc || '',
-        };
-        
-        // Special handling for professional domains
-        if (row.paymentCode || row.payment_code || row.code) {
-          record.paymentCode = row.paymentCode || row.payment_code || row.code || '';
-        }
-        
-        return record;
-      }).filter((record: ParsedRecord) => record.name); // Only include records with a name
-      
-      resolve(results);
-    } catch (error) {
-      reject(error);
+async function parseExcel(file: UploadedFile): Promise<ParsedRecord[]> {
+  try {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(file.path);
+    
+    const worksheet = workbook.worksheets[0];
+    if (!worksheet) {
+      throw new Error('No worksheet found in Excel file');
     }
-  });
+
+    const results: ParsedRecord[] = [];
+    
+    // Get header row to identify column names
+    const headers: string[] = [];
+    worksheet.getRow(1).eachCell((cell, colNumber) => {
+      headers[colNumber - 1] = (cell.value?.toString() || '').toLowerCase();
+    });
+
+    // Process each row
+    worksheet.eachRow((row, rowNumber) => {
+      if (rowNumber === 1) return; // Skip header row
+      
+      const record: ParsedRecord = {
+        name: '',
+        description: '',
+      };
+
+      row.eachCell((cell, colNumber) => {
+        const header = headers[colNumber - 1];
+        const value = cell.value?.toString() || '';
+
+        if (header.includes('name') || header.includes('title')) {
+          record.name = value;
+        } else if (header.includes('desc')) {
+          record.description = value;
+        } else if (header.includes('code') || header.includes('payment')) {
+          record.paymentCode = value;
+        }
+      });
+
+      // Only add records with a name
+      if (record.name) {
+        results.push(record);
+      }
+    });
+
+    return results;
+  } catch (error) {
+    throw error;
+  }
 }
 
 function parseTXT(file: UploadedFile): Promise<ParsedRecord[]> {

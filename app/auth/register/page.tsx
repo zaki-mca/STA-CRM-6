@@ -13,7 +13,9 @@ import { Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 
 export default function RegisterPage() {
-  const [name, setName] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -29,7 +31,7 @@ export default function RegisterPage() {
     setIsSubmitting(true)
 
     // Basic validation
-    if (!name || !email || !password || !confirmPassword) {
+    if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
       setError("Please fill in all fields")
       setIsSubmitting(false)
       return
@@ -53,7 +55,7 @@ export default function RegisterPage() {
       return
     }
 
-    const result = await register(name, email, password)
+    const result = await register(username, email, password, firstName, lastName)
 
     if (!result.success) {
       setError(result.error || "Registration failed")
@@ -78,13 +80,39 @@ export default function RegisterPage() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="firstName">First Name</Label>
               <Input
-                id="name"
+                id="firstName"
                 type="text"
-                placeholder="Enter your full name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your first name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                disabled={isSubmitting}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                type="text"
+                placeholder="Enter your last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                disabled={isSubmitting}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="Choose a username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 disabled={isSubmitting}
                 required
               />

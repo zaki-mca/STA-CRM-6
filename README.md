@@ -188,3 +188,223 @@ For example, if you want to modify a file and commit the changes, you would:
 Make changes to your files
 Stage the changes with git add . (or specific files)
 Commit with git commit -m "Your commit message"
+
+
+Email: admin@stacrm.com
+Password: admin123
+
+
+I have a Next.js webapp frontend Express js server api Postgresql database Ip adresse vps ubuntu
+
+prepare the project to be deployed in vps using docker
+
+delete other configurations let only node js and postgresql installed
+
+i have the postgresql  database installed and configured in vps
+
+How can I deploy it using docker
+
+# STA CRM System
+
+A comprehensive Customer Relationship Management (CRM) system built with Next.js and Express, designed for managing clients, providers, products, orders, and invoices.
+
+## Table of Contents
+
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Development Setup](#development-setup)
+- [Environment Variables](#environment-variables)
+- [API Documentation](#api-documentation)
+- [Deployment](#deployment)
+- [Troubleshooting](#troubleshooting)
+- [Common Issues](#common-issues)
+
+## Features
+
+- **Client Management**: Track client information, interactions, and history
+- **Provider Management**: Manage supplier details and relationships
+- **Product Catalog**: Organize products with categories and brands
+- **Order Processing**: Create and track orders with status updates
+- **Invoicing**: Generate and manage invoices
+- **Daily Logs**: Track client and order activities
+- **User Authentication**: Secure login and role-based access control
+- **Responsive Design**: Works on desktop and mobile devices
+
+## Project Structure
+
+The project is divided into two main parts:
+
+- **Frontend**: Next.js application in the root directory
+- **Backend**: Express API server in the `/server` directory
+
+```
+STA-CRM/
+├── app/                  # Next.js pages and routes
+├── components/           # React components
+├── contexts/             # React context providers
+├── hooks/                # Custom React hooks
+├── lib/                  # Utility functions and API clients
+├── public/               # Static assets
+├── server/               # Express API server
+│   ├── src/              # Server source code
+│   │   ├── controllers/  # API controllers
+│   │   ├── db/           # Database setup and migrations
+│   │   ├── middleware/   # Express middleware
+│   │   ├── routes/       # API routes
+│   │   └── utils/        # Utility functions
+│   └── uploads/          # Uploaded files
+└── styles/               # CSS styles
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16+)
+- PostgreSQL (v12+)
+- npm or yarn
+
+### Development Setup
+
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/your-username/sta-crm.git
+cd sta-crm
+```
+
+2. **Install frontend dependencies**
+
+```bash
+npm install
+```
+
+3. **Install backend dependencies**
+
+```bash
+cd server
+npm install
+cd ..
+```
+
+4. **Set up environment variables**
+
+```bash
+# Create frontend .env file
+cp .env.example .env.local
+
+# Create backend .env file
+cp server/.env.example server/.env
+```
+
+Edit both `.env` files with your configuration.
+
+5. **Set up the database**
+
+```bash
+# Create PostgreSQL database
+createdb stacrmdb
+
+# Run database migrations
+cd server
+npm run setup-db
+cd ..
+```
+
+6. **Start the development servers**
+
+```bash
+# In one terminal, start the backend
+cd server
+npm run dev
+
+# In another terminal, start the frontend
+npm run dev
+```
+
+The application will be available at `http://localhost:3000`.
+
+## Environment Variables
+
+### Frontend (.env.local)
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+```
+
+### Backend (server/.env)
+
+See [server/.env.example](server/.env.example) for all available options.
+
+## API Documentation
+
+The API endpoints are organized by resource:
+
+- `/api/auth` - Authentication
+- `/api/clients` - Client management
+- `/api/providers` - Provider management
+- `/api/products` - Product management
+- `/api/categories` - Category management
+- `/api/brands` - Brand management
+- `/api/orders` - Order management
+- `/api/invoices` - Invoice management
+- `/api/client-logs` - Client activity logs
+- `/api/order-logs` - Order activity logs
+
+## Deployment
+
+For detailed deployment instructions, see [STA-CRM-Deployment-Guide.md](STA-CRM-Deployment-Guide.md).
+
+## Troubleshooting
+
+### Database Connection Issues
+
+If you encounter database connection problems:
+
+1. Verify your database credentials in `server/.env`
+2. Check if PostgreSQL is running: `sudo service postgresql status`
+3. Ensure the database exists: `psql -l | grep stacrmdb`
+4. Check server logs for specific error messages: `cd server && npm run logs`
+
+### API Connection Errors
+
+If the frontend can't connect to the API:
+
+1. Verify the API server is running
+2. Check CORS settings in `server/src/index.ts`
+3. Ensure `NEXT_PUBLIC_API_URL` is set correctly in frontend `.env.local`
+4. Look for connection errors in browser console
+
+## Common Issues
+
+### "Request timed out" errors
+
+This usually indicates the backend is having trouble connecting to the database. Check:
+
+1. Database credentials in `server/.env`
+2. PostgreSQL server status
+3. Network connectivity between API server and database
+4. Server logs for detailed error messages
+
+### CORS errors
+
+If you see CORS-related errors in the browser console:
+
+1. Ensure the API server has CORS properly configured for your frontend domain
+2. Check that the `CORS_ORIGIN` in `server/.env` matches your frontend URL
+3. Verify that the Nginx configuration (if used) properly handles CORS headers
+
+### Authentication issues
+
+If login or registration fails:
+
+1. Check if the JWT secret is properly set in `server/.env`
+2. Verify user records exist in the database
+3. Check for password hashing issues in server logs
+4. Ensure the frontend is sending credentials in the correct format
+
+---
+
+For additional help or to report issues, please contact the development team.

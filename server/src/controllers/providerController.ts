@@ -23,6 +23,44 @@ class ProviderController extends BaseController {
     super('providers');
   }
 
+  // Override create method to provide better error messages
+  create = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { name, email, phone, address, contact_person, notes, status } = req.body;
+
+    try {
+      // Check if provider with this email already exists
+      const existingProvider = await query(
+        'SELECT id FROM providers WHERE email = $1',
+        [email]
+      );
+
+      if (existingProvider.rows.length > 0) {
+        return next(new AppError(`Duplicate entry: Key (email)=(${email}) already exists.`, 400));
+      }
+
+      // If no duplicate, proceed with creation
+      const result = await query(
+        `INSERT INTO providers (name, email, phone, address, contact_person, notes, status)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         RETURNING *`,
+        [name, email, phone, address, contact_person || '', notes || '', status || 'active']
+      );
+
+      res.status(201).json({
+        status: 'success',
+        data: result.rows[0]
+      });
+    } catch (err: any) {
+      // If it's a database unique constraint error, convert it to a more user-friendly error
+      if (err.code === '23505') { // PostgreSQL unique violation code
+        return next(new AppError(`Duplicate entry: Provider with email ${email} already exists.`, 400));
+      }
+      
+      // For other errors, pass them through
+      next(err);
+    }
+  });
+
   // Override getAll to include all provider fields
   getAll = catchAsync(async (req: Request, res: Response) => {
     const result = await query(`

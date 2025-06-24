@@ -451,8 +451,34 @@ export function CRMProvider({ children }: { children: React.ReactNode }) {
       
       return newProvider;
     } catch (err: any) {
-      handleApiError(err, "adding provider");
-      throw err;
+      console.log("Provider error caught:", err.message);
+      
+      // Check for duplicate email error using the isDuplicateError property or message content
+      if ((err instanceof ApiError && err.isDuplicateError) || 
+          (err.message && (
+            err.message.includes('duplicate key') || 
+            err.message.includes('already exists') || 
+            err.message.toLowerCase().includes('duplicate entry')
+          ))) {
+        // Show specific toast notification for duplicate provider with enhanced visibility
+        toast.error(`Provider with email "${providerData.email}" already exists.`, {
+          position: "top-right",
+          autoClose: 5000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored"
+        });
+        
+        // Return without throwing to prevent the unhandled promise rejection
+        return null;
+      } else {
+        // Handle other errors with the general error handler
+        handleApiError(err, "adding provider");
+        
+        // Return a rejected promise with the error
+        return Promise.reject(err);
+      }
     }
   }
 

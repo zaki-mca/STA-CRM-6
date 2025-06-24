@@ -9,7 +9,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {children}
       <ToastContainer
         position="top-right"
-        autoClose={3000}
+        autoClose={5000}
         hideProgressBar={false}
         newestOnTop
         closeOnClick
@@ -17,7 +17,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme="colored"
+        limit={3}
+        style={{ zIndex: 9999 }}
       />
     </>
   )

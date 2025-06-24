@@ -6,6 +6,7 @@ import { rateLimit } from 'express-rate-limit';
 import path from 'path';
 
 // Import routes
+import authRoutes from './routes/authRoutes';
 import clientRoutes from './routes/clientRoutes';
 import providerRoutes from './routes/providerRoutes';
 import productRoutes from './routes/productRoutes';
@@ -29,79 +30,31 @@ import { serverMonitor } from './utils/monitoring';
 // Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-// Initialize express app
+// Create Express app
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// Apply middlewares
-app.use(helmet()); // Security headers
-app.use(express.json({ limit: '10mb' })); // Parse JSON bodies
-app.use(express.urlencoded({ extended: true, limit: '10mb' })); // Parse URL-encoded bodies
+// Set security HTTP headers
+app.use(helmet());
 
-// Configure CORS
-const corsOptions = {
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'], // Frontend URL(s)
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true, // Allow cookies if using authentication
-  optionsSuccessStatus: 204,
-};
-app.use(cors(corsOptions)); // Enable CORS with options
+// Enable CORS
+app.use(cors());
 
-// Apply rate limiting
+// Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
-  standardHeaders: true,
-  legacyHeaders: false,
+  windowMs: 60 * 60 * 1000, // 1 hour
+  message: 'Too many requests from this IP, please try again in an hour!'
 });
+
+// Apply rate limiter to all routes
 app.use(limiter);
 
-// Enhanced health check endpoint
-app.get('/api/health', async (req: Request, res: Response) => {
-  try {
-    // Check database connection
-    const dbHealthy = await checkHealth();
-    const isMonitoring = !!serverMonitor.getHealthStatus();
-    
-    // Collect system information
-    const healthInfo = {
-      status: dbHealthy ? 'healthy' : 'degraded',
-      timestamp: new Date(),
-      uptime: process.uptime(),
-      environment: process.env.NODE_ENV || 'development',
-      monitoring: {
-        active: isMonitoring,
-        status: serverMonitor.getHealthStatus() ? 'healthy' : 'unhealthy'
-      },
-      database: {
-        connected: dbHealthy,
-        connectionString: process.env.DATABASE_URL ? 
-          `${process.env.DATABASE_URL.split('@')[0].split(':')[0]}:****@${process.env.DATABASE_URL.split('@')[1] || ''}` : 
-          'not configured'
-      },
-      memory: {
-        rss: `${Math.round(process.memoryUsage().rss / 1024 / 1024)} MB`,
-        heapTotal: `${Math.round(process.memoryUsage().heapTotal / 1024 / 1024)} MB`,
-        heapUsed: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB`
-      }
-    };
-    
-    if (dbHealthy) {
-      res.json(healthInfo);
-    } else {
-      res.status(500).json(healthInfo);
-    }
-  } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      message: 'Health check failed',
-      error: error instanceof Error ? error.message : String(error)
-    });
-  }
-});
+// Body parser, reading data from body into req.body
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
-// API routes
+// Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/providers', providerRoutes);
 app.use('/api/products', productRoutes);
@@ -114,32 +67,44 @@ app.use('/api/client-logs', clientLogRoutes);
 app.use('/api/order-logs', orderLogRoutes);
 app.use('/api/order-log-entries', orderLogEntryRoutes);
 
+// Health check endpoint
+app.get('/health', async (req: Request, res: Response) => {
+  const dbHealth = await checkHealth();
+  res.json({
+    status: dbHealth.healthy ? 'ok' : 'error',
+    timestamp: new Date(),
+    db: dbHealth
+  });
+});
+
 // Handle undefined routes
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-// Global error handler
+// Error handling middleware
 app.use(handleError);
 
-// Start the server
-const server = app.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
+// Start server
+const port = Number(process.env.PORT) || 3001;
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server is running on port ${port}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   
-  // Start the server monitoring service (check every 30 seconds)
-  serverMonitor.start(30000);
+  // Log important configuration (without sensitive details)
+  console.log(`Database host: ${process.env.DB_HOST || 'Not configured'}`);
+  console.log(`Database name: ${process.env.DB_NAME || 'Not configured'}`);
   
-  // Register a shutdown handler to clean up resources
-  process.on('SIGTERM', () => {
-    console.log('SIGTERM signal received: closing HTTP server');
-    
-    // Stop the monitoring service
-    serverMonitor.stop();
-    
-    // Close the server
-    server.close(() => {
-      console.log('HTTP server closed');
-      process.exit(0);
-    });
+  // Start server monitoring
+  serverMonitor.start();
+  
+  // Perform initial health check
+  checkHealth().then(health => {
+    if (!health.healthy) {
+      console.error(`WARNING: Database connection issue: ${health.details}`);
+      console.error('The server started but database connection failed. API calls requiring database access will fail.');
+    } else {
+      console.log('Database connection verified successfully.');
+    }
   });
 }); 

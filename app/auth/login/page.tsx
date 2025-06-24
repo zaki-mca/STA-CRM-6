@@ -133,9 +133,9 @@ export default function LoginPage() {
       <div className="fixed bottom-4 right-4 bg-card border rounded-lg p-4 shadow-lg max-w-sm">
         <h4 className="font-semibold text-sm mb-2">Demo Credentials</h4>
         <p className="text-xs text-muted-foreground">
-          Email: admin@example.com
+          Email: admin@stacrm.com
           <br />
-          Password: password
+          Password: admin123
         </p>
       </div>
     </div>

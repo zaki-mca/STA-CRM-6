@@ -46,11 +46,11 @@ class ServerMonitor {
   private async checkHealth() {
     try {
       // Check database connectivity
-      const isDatabaseHealthy = await checkHealth();
+      const dbHealth = await checkHealth();
       
-      if (!isDatabaseHealthy) {
+      if (!dbHealth.healthy) {
         this.reconnectAttempts++;
-        console.error(`Database connection check failed. Attempt ${this.reconnectAttempts}/${this.MAX_RECONNECT_ATTEMPTS}`);
+        console.error(`Database connection check failed: ${dbHealth.details}. Attempt ${this.reconnectAttempts}/${this.MAX_RECONNECT_ATTEMPTS}`);
         
         if (this.reconnectAttempts >= this.MAX_RECONNECT_ATTEMPTS) {
           this.setHealthStatus(false);

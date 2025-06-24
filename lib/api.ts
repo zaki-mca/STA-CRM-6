@@ -5,12 +5,22 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/a
 export class ApiError extends Error {
   status: number;
   statusText: string;
+  isDuplicateError?: boolean;
+  isRetryable?: boolean;
+  retryCount?: number;
+  maxRetries?: number;
+  errorCode?: string;
+  originalMessage?: string;
   
   constructor(message: string, status: number, statusText: string = '') {
     super(message);
     this.status = status;
     this.statusText = statusText;
     this.name = 'ApiError';
+    this.isDuplicateError = false;
+    this.isRetryable = status >= 500 || status === 0; // Server errors and network errors are retryable
+    this.retryCount = 0;
+    this.maxRetries = 3;
   }
 }
 
@@ -78,8 +88,15 @@ async function handleResponse(response: Response) {
         }
         
         // Check for specific database error types and provide clearer messages
-        if (data && data.message && data.message.includes('duplicate key')) {
-          throw new ApiError('A record with this information already exists. Please check for duplicates.', response.status, response.statusText);
+        if (data && data.message && (
+            data.message.includes('duplicate key') || 
+            data.message.includes('already exists') ||
+            data.message.toLowerCase().includes('duplicate entry')
+        )) {
+          const error = new ApiError('A record with this information already exists. Please check for duplicates.', response.status, response.statusText);
+          error.isDuplicateError = true;
+          error.originalMessage = data.message;
+          throw error;
         }
         
         if (data && data.message && data.message.includes('violates foreign key constraint')) {
@@ -133,6 +150,8 @@ async function handleResponse(response: Response) {
 
 // Generic fetch wrapper with error handling
 async function fetchApi(endpoint: string, options: RequestInit = {}, retryCount = 0) {
+  const MAX_RETRIES = 3;
+  
   try {
     const url = `${API_BASE_URL}${endpoint}`;
     const headers = {
@@ -166,12 +185,15 @@ async function fetchApi(endpoint: string, options: RequestInit = {}, retryCount 
       
       // Extract more detailed error information if possible
       let errorDetails = '';
+      let errorCode = '';
+      
       try {
         const errorText = await response.text();
         if (errorText && errorText.trim() !== '') {
           try {
             const errorJson = JSON.parse(errorText);
             errorDetails = errorJson.message || errorJson.error || errorText;
+            errorCode = errorJson.code || '';
           } catch {
             errorDetails = errorText;
           }
@@ -186,15 +208,33 @@ async function fetchApi(endpoint: string, options: RequestInit = {}, retryCount 
         `Server error (${response.status}): ${statusText}. Details: ${errorDetails}` : 
         `Server error (${response.status}): ${statusText}`;
       
-      // Retry logic for server errors (max 2 retries)
-      if (retryCount < 2) {
-        console.log(`Retrying request due to server error (${retryCount + 1}/2)...`);
-        // Wait 1 second before retry with exponential backoff
-        await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1))); // Exponential backoff
+      // Check if the error is related to database connection
+      const isDatabaseConnectionError = 
+        errorDetails.includes('database') || 
+        errorDetails.includes('ECONNREFUSED') || 
+        errorDetails.includes('SASL') ||
+        errorCode === 'DB_CONNECTION_ERROR';
+      
+      // Determine if the error is retryable
+      const isRetryable = isDatabaseConnectionError || 
+                          response.status === 503 || // Service Unavailable
+                          response.status === 504;   // Gateway Timeout
+      
+      // Retry logic for server errors (max 3 retries)
+      if (isRetryable && retryCount < MAX_RETRIES) {
+        console.log(`Retrying request due to ${isDatabaseConnectionError ? 'database' : 'server'} error (${retryCount + 1}/${MAX_RETRIES})...`);
+        // Wait with exponential backoff: 1s, 2s, 4s
+        const backoffTime = 1000 * Math.pow(2, retryCount);
+        await new Promise(resolve => setTimeout(resolve, backoffTime));
         return fetchApi(endpoint, options, retryCount + 1);
       }
       
-      throw new ApiError(detailedMessage, response.status, statusText);
+      const apiError = new ApiError(detailedMessage, response.status, statusText);
+      apiError.isRetryable = isRetryable;
+      apiError.retryCount = retryCount;
+      apiError.maxRetries = MAX_RETRIES;
+      apiError.errorCode = errorCode || 'SERVER_ERROR';
+      throw apiError;
     }
     
     try {
@@ -218,23 +258,37 @@ async function fetchApi(endpoint: string, options: RequestInit = {}, retryCount 
     if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
       console.error('Network error details:', error);
       
-      // Retry logic for network errors (max 2 retries)
-      if (retryCount < 2) {
-        console.log(`Retrying request due to network error (${retryCount + 1}/2)...`);
-        // Wait 1 second before retry with exponential backoff
-        await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
+      // Retry logic for network errors (max 3 retries)
+      if (retryCount < MAX_RETRIES) {
+        console.log(`Retrying request due to network error (${retryCount + 1}/${MAX_RETRIES})...`);
+        // Wait with exponential backoff: 1s, 2s, 4s
+        const backoffTime = 1000 * Math.pow(2, retryCount);
+        await new Promise(resolve => setTimeout(resolve, backoffTime));
         return fetchApi(endpoint, options, retryCount + 1);
       }
       
-      throw new ApiError('Cannot connect to API server. Please check if the server is running.', 500);
+      const apiError = new ApiError('Cannot connect to API server. Please check if the server is running.', 0);
+      apiError.isRetryable = true;
+      apiError.retryCount = retryCount;
+      apiError.maxRetries = MAX_RETRIES;
+      apiError.errorCode = 'NETWORK_ERROR';
+      throw apiError;
     }
     
     if (error instanceof TypeError && error.message.includes('Cross-Origin Request Blocked')) {
-      throw new ApiError('CORS error: API server rejected the request. Check CORS configuration.', 500);
+      const apiError = new ApiError('CORS error: API server rejected the request. Check CORS configuration.', 0);
+      apiError.isRetryable = false;
+      apiError.errorCode = 'CORS_ERROR';
+      throw apiError;
     }
     
     console.error('API fetch error:', error);
-    throw new ApiError('Network error or server is down: ' + (error as Error).message, 500);
+    const apiError = new ApiError('Network error or server is down: ' + (error as Error).message, 0);
+    apiError.isRetryable = true;
+    apiError.retryCount = retryCount;
+    apiError.maxRetries = MAX_RETRIES;
+    apiError.errorCode = 'UNKNOWN_ERROR';
+    throw apiError;
   }
 }
 

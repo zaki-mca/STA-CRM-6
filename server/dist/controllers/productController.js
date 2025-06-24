@@ -21,7 +21,7 @@ class ProductController extends baseController_1.BaseController {
       ORDER BY p.created_at DESC
     `);
             // Ensure all products have the required fields
-            const products = result.rows.map(product => ({
+            const products = result.rows.map((product) => ({
                 ...product,
                 // Ensure these fields are never null/undefined for the frontend
                 name: product.name || '',
@@ -61,20 +61,21 @@ class ProductController extends baseController_1.BaseController {
                 return next(new errorHandler_1.AppError('Product not found with this ID', 404));
             }
             // Ensure the product has all required fields
+            const productRow = result.rows[0];
             const product = {
-                ...result.rows[0],
+                ...productRow,
                 // Ensure these fields are never null/undefined for the frontend
-                name: result.rows[0].name || '',
-                description: result.rows[0].description || '',
-                sku: result.rows[0].sku || '',
-                sell_price: parseFloat(result.rows[0].sell_price) || parseFloat(result.rows[0].price) || 0,
-                buy_price: parseFloat(result.rows[0].buy_price) || parseFloat(result.rows[0].price) * 0.7 || 0,
-                price: parseFloat(result.rows[0].price) || parseFloat(result.rows[0].sell_price) || 0,
-                quantity: parseInt(result.rows[0].quantity) || 0,
-                category_id: result.rows[0].category_id || null,
-                category_name: result.rows[0].category_name || 'Uncategorized',
-                brand_id: result.rows[0].brand_id || null,
-                brand_name: result.rows[0].brand_name || 'Unbranded'
+                name: productRow.name || '',
+                description: productRow.description || '',
+                sku: productRow.sku || '',
+                sell_price: parseFloat(productRow.sell_price) || parseFloat(productRow.price) || 0,
+                buy_price: parseFloat(productRow.buy_price) || parseFloat(productRow.price) * 0.7 || 0,
+                price: parseFloat(productRow.price) || parseFloat(productRow.sell_price) || 0,
+                quantity: parseInt(productRow.quantity) || 0,
+                category_id: productRow.category_id || null,
+                category_name: productRow.category_name || 'Uncategorized',
+                brand_id: productRow.brand_id || null,
+                brand_name: productRow.brand_name || 'Unbranded'
             };
             res.status(200).json({
                 status: 'success',
@@ -207,7 +208,7 @@ class ProductController extends baseController_1.BaseController {
       ORDER BY p.name
     `, [categoryId]);
             // Transform the results to include category and brand as objects
-            const products = result.rows.map(product => {
+            const products = result.rows.map((product) => {
                 return {
                     ...product,
                     category: product.category_id ? {
@@ -248,7 +249,7 @@ class ProductController extends baseController_1.BaseController {
       ORDER BY p.name
     `, [brandId]);
             // Transform the results to include category and brand as objects
-            const products = result.rows.map(product => {
+            const products = result.rows.map((product) => {
                 return {
                     ...product,
                     category: product.category_id ? {
@@ -284,7 +285,7 @@ class ProductController extends baseController_1.BaseController {
       ORDER BY p.quantity ASC
     `, [threshold]);
             // Transform the results to include category and brand as objects
-            const products = result.rows.map(product => {
+            const products = result.rows.map((product) => {
                 return {
                     ...product,
                     category: product.category_id ? {

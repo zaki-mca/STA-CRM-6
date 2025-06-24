@@ -7,12 +7,28 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 // Connection settings
 const connectionConfig = {
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT) || 5432,
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  // Alternative: Use connection string if provided
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  max: 20, // Maximum number of clients in the pool
-  idleTimeoutMillis: 30000, // How long a client is allowed to remain idle before being closed
-  connectionTimeoutMillis: 5000, // Increased timeout for connection
+  max: Number(process.env.DB_POOL_MAX) || 20, // Maximum number of clients in the pool
+  idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT) || 30000, // How long a client is allowed to remain idle before being closed
+  connectionTimeoutMillis: Number(process.env.DB_CONNECTION_TIMEOUT) || 5000, // Increased timeout for connection
 };
+
+// Log connection details (without sensitive info)
+console.log('Database connection configuration:', {
+  host: connectionConfig.host,
+  port: connectionConfig.port,
+  database: connectionConfig.database,
+  user: connectionConfig.user,
+  ssl: connectionConfig.ssl ? 'enabled' : 'disabled',
+  connectionString: connectionConfig.connectionString ? 'provided' : 'not provided'
+});
 
 // Create a connection pool
 const pool = new Pool(connectionConfig);
@@ -20,7 +36,8 @@ const pool = new Pool(connectionConfig);
 // Connection management
 let isConnected = false;
 let connectionRetries = 0;
-const MAX_RETRIES = 5;
+const MAX_RETRIES = Number(process.env.DB_CONNECTION_RETRIES) || 5;
+const RETRY_DELAY = Number(process.env.DB_CONNECTION_RETRY_DELAY) || 5000;
 
 // Monitor pool events
 pool.on('connect', (client) => {
@@ -39,7 +56,7 @@ pool.on('error', (err, client) => {
     console.log(`Attempting to reconnect (retry ${connectionRetries}/${MAX_RETRIES})...`);
     setTimeout(() => {
       testConnection();
-    }, 5000 * connectionRetries); // Exponential backoff
+    }, RETRY_DELAY * connectionRetries); // Exponential backoff
   } else {
     console.error(`Failed to reconnect after ${MAX_RETRIES} attempts`);
   }
@@ -63,7 +80,7 @@ const testConnection = async () => {
       console.log(`Attempting to reconnect (retry ${connectionRetries}/${MAX_RETRIES})...`);
       setTimeout(() => {
         testConnection();
-      }, 5000 * connectionRetries); // Exponential backoff
+      }, RETRY_DELAY * connectionRetries); // Exponential backoff
     }
   } finally {
     if (client) {
@@ -161,13 +178,34 @@ export async function withTransaction<T>(callback: (client: PoolClient) => Promi
 }
 
 // Export enhanced health check function
-export async function checkHealth(): Promise<boolean> {
+export async function checkHealth(): Promise<{ healthy: boolean; details?: string; error?: any }> {
   try {
     const result = await query('SELECT NOW()');
-    return result && result.rows && result.rows.length > 0;
-  } catch (err) {
+    return { 
+      healthy: result && result.rows && result.rows.length > 0,
+      details: 'Database connection successful'
+    };
+  } catch (err: any) {
     console.error('Database health check failed:', err);
-    return false;
+    
+    // More specific error information
+    let errorDetails = 'Unknown database error';
+    
+    if (err.code === 'ECONNREFUSED') {
+      errorDetails = 'Connection refused - database server may be down';
+    } else if (err.code === '28P01') {
+      errorDetails = 'Authentication failed - invalid username or password';
+    } else if (err.code === '3D000') {
+      errorDetails = 'Database does not exist';
+    } else if (err.message && err.message.includes('SASL')) {
+      errorDetails = 'SASL authentication error - check database credentials';
+    }
+    
+    return { 
+      healthy: false, 
+      details: errorDetails,
+      error: process.env.NODE_ENV === 'development' ? err : undefined
+    };
   }
 }
 

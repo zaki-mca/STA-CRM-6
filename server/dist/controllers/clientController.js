@@ -24,7 +24,7 @@ class ClientController extends baseController_1.BaseController {
                 console.log("First client:", result.rows[0].id, result.rows[0].name);
             }
             // Ensure all clients have the required fields
-            const clients = result.rows.map(client => ({
+            const clients = result.rows.map((client) => ({
                 ...client,
                 // Ensure these fields are never null/undefined for the frontend
                 first_name: client.first_name || '',
@@ -64,22 +64,23 @@ class ClientController extends baseController_1.BaseController {
                 return next(new errorHandler_1.AppError('Client not found with this ID', 404));
             }
             // Ensure the client has all required fields
+            const clientRow = result.rows[0];
             const client = {
-                ...result.rows[0],
+                ...clientRow,
                 // Ensure these fields are never null/undefined for the frontend
-                first_name: result.rows[0].first_name || '',
-                last_name: result.rows[0].last_name || '',
-                gender: result.rows[0].gender || '',
-                phone: result.rows[0].phone || '',
-                address: result.rows[0].address || '',
-                professional_domain_name: result.rows[0].professional_domain_name || '',
-                professional_domain_code: result.rows[0].professional_domain_code || '',
-                ccp_account: result.rows[0].ccp_account || '',
-                cle: result.rows[0].cle || '',
-                rip: result.rows[0].rip || '',
-                rip_cle: result.rows[0].rip_cle || '',
-                revenue: parseFloat(result.rows[0].revenue) || 0,
-                age: result.rows[0].age || 0
+                first_name: clientRow.first_name || '',
+                last_name: clientRow.last_name || '',
+                gender: clientRow.gender || '',
+                phone: clientRow.phone || '',
+                address: clientRow.address || '',
+                professional_domain_name: clientRow.professional_domain_name || '',
+                professional_domain_code: clientRow.professional_domain_code || '',
+                ccp_account: clientRow.ccp_account || '',
+                cle: clientRow.cle || '',
+                rip: clientRow.rip || '',
+                rip_cle: clientRow.rip_cle || '',
+                revenue: parseFloat(clientRow.revenue) || 0,
+                age: clientRow.age || 0
             };
             res.status(200).json({
                 status: 'success',
